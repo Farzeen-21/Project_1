@@ -1,0 +1,4 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" width="10rem">
+	<Text  text="{NO_OF_LEAVES} (in Days)" />
+	<!-- <Button core:require="{ handler: 'com/ibspl/leaveapproval/ext/fragment/No_of_Days'}" text="Sample Text" press="handler.onPress" /> -->
+</core:FragmentDefinition>

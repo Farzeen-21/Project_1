@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@sap/ui5-builder-webide-extension": "^1.1.9",
+    "ui5-task-zipper": "^3.3.1"
+  }
+}

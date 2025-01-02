@@ -1,0 +1,288 @@
+<mvc:View controllerName="com.ibspl.leaveplanner.controller.Master"
+    xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:m="sap.m" xmlns="sap.uxap" xmlns:layout="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form" height="100%" xmlns:ui="sap.ui.table" xmlns:tnt="sap.tnt"  
+    displayBlock="true" xmlns:t="sap.suite.ui.commons" xmlns:l="sap.ui.layout" xmlns:unified="sap.ui.unified"
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:smartTable="sap.ui.comp.smarttable">
+    <m:Page id="page" title="{i18n>title}" class="sapUiSizeCompact" showHeader="false">
+        <m:content>
+            <layout:DynamicSideContent id="idDynamicSideContent" class="sapUiSizeCompact" sideContentFallDown="BelowM"
+				breakpointChanged="handleBreakpointChangeEvent" showSideContent="true">
+                <ObjectPageLayout id="ObjectPageLayout" selectedSection="firstSection" enableLazyLoading="false" 
+                    showEditHeaderButton="false" >
+                        <headerTitle>
+							<ObjectPageDynamicHeaderTitle>
+								<expandedHeading>
+									<m:Title text="{userAttriJson>/EMPLOYEE_NAME}" wrapping="true"/>
+								</expandedHeading>
+								<snappedHeading>
+									<m:FlexBox fitContainer="true" alignItems="Center">
+										<m:Title text="{userAttriJson>/EMPLOYEE_NAME}" wrapping="true"/>
+									</m:FlexBox>
+								</snappedHeading>
+								<expandedContent>
+									<m:Text text="Employee ID : {userAttriJson>/EMPLOYEE_ID}"/>
+								</expandedContent>
+								<snappedContent>
+									<m:Text text="Employee ID : {userAttriJson>/EMPLOYEE_ID}"/>
+								</snappedContent>
+								<snappedTitleOnMobile>
+									<m:Title text="Employee ID : {userAttriJson>/EMPLOYEE_ID}"/>
+								</snappedTitleOnMobile>
+
+								<content>
+									<m:FlexBox wrap="Wrap">
+										<layout:VerticalLayout class="sapUiSmallMarginEnd sapUiLargeMarginBegin">
+											<m:GenericTag text="General Leave : " status="{path: 'userAttriJson>/GENERAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}" design="StatusIconHidden" >
+												<m:ObjectNumber emphasized="true" number="{userAttriJson>/GENERAL_LEAVE_BALANCE}" 
+													state="{path: 'userAttriJson>/GENERAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}"/>
+											</m:GenericTag>
+										</layout:VerticalLayout>
+										<layout:VerticalLayout class="sapUiSmallMarginBeginEnd"> 
+											<m:GenericTag text="Casual Leave : " status="{path: 'userAttriJson>/CASUAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}" design="StatusIconHidden" >
+												<m:ObjectNumber emphasized="true" number="{userAttriJson>/CASUAL_LEAVE_BALANCE}" 
+													state="{path: 'userAttriJson>/CASUAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}"/>
+											</m:GenericTag>
+										</layout:VerticalLayout>
+									</m:FlexBox>
+								</content>
+							</ObjectPageDynamicHeaderTitle>
+						</headerTitle>
+
+						<!-- <headerContent>
+							<m:FlexBox wrap="Wrap">
+								<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
+									<m:GenericTag text="General Leave : " status="{path: 'userAttriJson>/GENERAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}" design="StatusIconHidden" >
+										<m:ObjectNumber emphasized="true" number="{userAttriJson>/GENERAL_LEAVE_BALANCE}" 
+											state="{path: 'userAttriJson>/GENERAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}"/>
+									</m:GenericTag>
+								</layout:VerticalLayout>
+								<layout:VerticalLayout class="sapUiSmallMarginBeginEnd"> 
+									<m:GenericTag text="Casual Leave : " status="{path: 'userAttriJson>/CASUAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}" design="StatusIconHidden" >
+										<m:ObjectNumber emphasized="true" number="{userAttriJson>/CASUAL_LEAVE_BALANCE}" 
+											state="{path: 'userAttriJson>/CASUAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}"/>
+									</m:GenericTag>
+								</layout:VerticalLayout>
+							</m:FlexBox>
+							<m:MessageStrip text="General Leave balance is 0" type="Error" showIcon="true" showCloseButton="true" class="sapUiTinyMarginTop" 
+								visible="{= ${userAttriJson>/GENERAL_LEAVE_BALANCE} === 0 ? true : false}"/>
+							<m:MessageStrip text="Casual Leave balance is 0" type="Error" showIcon="true"	showCloseButton="true" class="sapUiTinyMarginTop"
+								visible="{= ${userAttriJson>/CASUAL_LEAVE_BALANCE} === 0 ? true : false}"/>
+						</headerContent> -->
+
+						<sections>
+							<!-- <ObjectPageSection title="Dashboard">
+							</ObjectPageSection> -->
+
+
+							<!-- <ObjectPageSection title="Plan Requests ({userAttriJson>/COUNT})" id="firstSection" visible="{formModel>/tableVisible}"> -->
+							<ObjectPageSection title="Plan Requests ({userAttriJson>/COUNT})" id="firstSection" >
+								<ObjectPageSubSection>
+									<ui:Table id="trAddId" rows="{tableData>/value}" selectionMode="None" ariaLabelledBy="title">
+														<ui:extension>
+															<m:OverflowToolbar style="Clear">
+																<m:ToolbarSpacer/>
+																<m:Button icon="sap-icon://add" text="Add Request" type="Emphasized" visible="{formModel>/button}" press="onAdd"/>
+															</m:OverflowToolbar>
+														</ui:extension>
+														<ui:columns>
+															<ui:Column width="8rem">
+																<m:Label text="Start Date" design="Bold" />
+																<ui:template>
+																	<m:Text  text="{path:'tableData>START_DATE',formatter:'.formatter.formatDate'}" />
+																</ui:template>
+															</ui:Column>
+															<ui:Column width="8rem">
+																<m:Label text="End Date" design="Bold" />
+																<ui:template>
+																	<m:Text  text="{path:'tableData>END_DATE',formatter:'.formatter.formatDate'}" />
+																</ui:template>
+															</ui:Column>
+															<ui:Column width="8rem">
+																<m:Label text="No. of Days" design="Bold" />
+																<ui:template>
+																	<m:Text  text="{path:'tableData>NO_OF_LEAVES'}" />
+																</ui:template>
+															</ui:Column>
+															<ui:Column width="10rem">
+																<m:Label text="Leave Type" design="Bold" />
+																<ui:template>
+																	<m:Text  text="{path:'tableData>LEAVE_TYPE',formatter:'.formatter.formatLeaveType'}" />
+																</ui:template>
+															</ui:Column>
+															<ui:Column width="12rem">
+																<m:Label text="Leave Status" design="Bold" />
+																<ui:template>
+																	<m:ObjectStatus text="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatus'}"
+																		state="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusState'}"
+																		icon="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusIcon'}"/>
+																</ui:template>
+															</ui:Column>
+															<ui:Column width="18rem">
+																<m:Label text="Leave Notes" design="Bold" />
+																<ui:template>
+																	<m:Text  text="{path:'tableData>LEAVE_NOTES'}" />
+																</ui:template>
+															</ui:Column>
+															<ui:Column width="2rem">
+																<m:Label  />
+																<ui:template>
+																	<core:Icon src="sap-icon://delete" color="red" press="onDelete" 
+																		visible="{= ${tableData>LEAVE_STATUS} === 1 ? true : false}"/>
+																</ui:template>
+															</ui:Column>
+														</ui:columns>
+													</ui:Table>
+
+
+
+									<!-- <smartFilterBar:SmartFilterBar id="idsmartFilterBar" entitySet="TEAM_LEAVE_INFO"  visible="true">
+										<smartFilterBar:controlConfiguration>
+											<smartFilterBar:ControlConfiguration key="PO_Number" visibleInAdvancedArea="true" />
+											<smartFilterBar:ControlConfiguration key="CreationDate" visibleInAdvancedArea="true" 
+												conditionType="{module: 'sap.ui.comp.config.condition.DateRangeType'}" />
+											<smartFilterBar:ControlConfiguration key="Status" visibleInAdvancedArea="true" />
+											<smartFilterBar:ControlConfiguration key="CompanyCode" visibleInAdvancedArea="true" />
+										</smartFilterBar:controlConfiguration>
+									</smartFilterBar:SmartFilterBar> -->
+
+									<!-- <smartTable:SmartTable  id="smartTable_ResponsiveTable" smartFilterId="idsmartFilterBar" 
+										tableType="ResponsiveTable" editable="false" entitySet="TEAM_LEAVE_INFO" 
+										useVariantManagement="true" useTablePersonalisation="true" header="Table Items" 
+										showRowCount="true" enableExport="true" beforeRebindTable="onBeforeRebindTable"
+										enableAutoBinding="true" demandPopin="true" enableAutoColumnWidth="true"
+										enableCopy="false" showFullScreenButton="false" beforeExport="onBeforeExport"
+										requestAtLeastFields="PO_Number,CompanyCode,createdBy,CreationDate,Total_Amount,Criticality,Status">
+										<smartTable:customToolbar>
+											<m:OverflowToolbar design="Transparent">
+												<m:ToolbarSpacer/>
+												<m:SearchField placeholder="Search by Created By" width="25%" change="onChange" />
+											</m:OverflowToolbar>
+										</smartTable:customToolbar>
+										<m:Table sticky="ColumnHeaders" >
+											<m:columns>
+												<m:Column hAlign="Center" >
+													<m:customData>
+														<core:CustomData key="p13nData" value='\{"columnKey": "PO_Number", "leadingProperty": "PO_Number", "filterProperty": "PO_Number", "sortProperty": "PO_Number" }'/>
+													</m:customData>
+													<m:Label text="{i18n>po_number}" design="Bold"/>
+												</m:Column>
+												<m:Column hAlign="Center" >
+													<m:customData>
+														<core:CustomData key="p13nData" value='\{"columnKey": "CompanyCode", "leadingProperty": "CompanyCode", "filterProperty": "CompanyCode", "sortProperty": "CompanyCode" }'/>
+													</m:customData>
+													<m:Label text="{i18n>c_code}" design="Bold"/>
+												</m:Column>
+												<m:Column hAlign="Center" >
+													<m:customData>
+														<core:CustomData key="p13nData" value='\{"columnKey": "createdBy", "leadingProperty": "createdBy", "filterProperty": "createdBy", "sortProperty": "createdBy" }'/>
+													</m:customData>
+													<m:Label text="{i18n>createdBy}" design="Bold"/>
+												</m:Column>
+												<m:Column hAlign="Center" >
+													<m:customData>
+														<core:CustomData key="p13nData" value='\{"columnKey": "CreationDate", "leadingProperty": "CreationDate", "filterProperty": "CreationDate", "sortProperty": "CreationDate" }'/>
+													</m:customData>
+													<m:Label text="{i18n>c_date}" design="Bold"/>
+												</m:Column>
+											</m:columns>
+
+											<m:items>
+												<m:ColumnListItem type="Navigation" press="onRowChange">
+													<m:cells>
+														<m:Text text="{PO_Number}" />    
+														<m:Text text="{CompanyCode}" /> 
+														<m:Text text="{createdBy}" /> 
+														<m:Text text="{path:'CreationDate', type: 'sap.ui.model.type.DateTime', formatOptions:{ pattern: 'dd-MM-yyyy'}}"/> 
+														<m:Text text="{Total_Amount}" /> 
+														<m:ObjectStatus text="{S_Master/DESC}" state="{path:'S_Master/CODE',formatter:'.formatter.getStatus'}" inverted="true"/> 
+													</m:cells>
+												</m:ColumnListItem>
+											</m:items>
+										</m:Table>
+									</smartTable:SmartTable> -->
+								</ObjectPageSubSection>
+							</ObjectPageSection >
+
+							<!-- <ObjectPageSection title="Calendar" id="secondSection" visible="{formModel>/calendarVisible}"> -->
+							<ObjectPageSection title="Calendar" id="secondSection" >
+								<ObjectPageSubSection>
+									<m:VBox class="sapUiSmallMargin">
+										<m:SinglePlanningCalendar id="SPC1" class="sapUiSmallMarginTop" title= "My Calendar"
+											appointments="{path: 'appointmentData>/appointments'}" 
+											appointmentSelect="handleAppointmentSelect">
+											<m:views>
+												<!-- <m:SinglePlanningCalendarDayView key="DayView" title="Day" /> -->
+												<m:SinglePlanningCalendarWeekView key="WeekView" title="Week" />
+												<m:SinglePlanningCalendarMonthView key="MonthView" title="Month" />
+											</m:views>
+											<m:appointments>
+												<unified:CalendarAppointment
+													title="{path: 'appointmentData>title', formatter: '.formatter.formatLeaveType'}"
+													text= "{appointmentData>text}"
+													type="{path:'appointmentData>type'}"
+													startDate= "{appointmentData>startDate}"
+													endDate= "{appointmentData>endDate}">
+												</unified:CalendarAppointment>
+											</m:appointments>
+										</m:SinglePlanningCalendar>
+									</m:VBox >
+								</ObjectPageSubSection>
+							</ObjectPageSection >
+						</sections>
+                </ObjectPageLayout>
+
+				<layout:sideContent>
+					<m:VBox class="sapUiSmallMargin">
+						<f:SimpleForm id="simpleForm1" editable="true" layout="ResponsiveGridLayout"  
+							singleContainerFullSize="false" >
+							<f:toolbar>
+								<m:Toolbar id="TB1">
+									<m:Title id="Title1" text="Leave Request"/>
+									<m:ToolbarSpacer />
+									<m:Button icon="sap-icon://nav-back" visible="{formModel>/button}" press="onAdd"/>
+								</m:Toolbar>
+							</f:toolbar>
+							<f:content>
+								<m:Label text="Select Type of Leave" required="true" design="Bold" />
+								<m:ComboBox id="idCombo" items="{path: 'LeaveTypeData>/value'}" selectionChange="onSelectionChange">
+									<core:Item key="{LeaveTypeData>CODE}" text="{LeaveTypeData>DESCRIPTION}" enabled="{LeaveTypeData>ENABLED}"/>
+								</m:ComboBox>
+
+								<m:Label text="Last Worked Date" required="true" design="Bold" class="sapUiTinyMarginTop" visible="{formModel>/lastDateVisible}"/>
+								<m:DatePicker change="onLDate" value="{'path':'formModel>/lDate', 'type':'sap.ui.model.type.Date', 'formatOptions': {'pattern': 'dd-MM-yyyy'}}" 
+									displayFormat="dd-MM-yyyy" id="idLWDate" visible="{formModel>/lastDateVisible}"/>
+
+								<m:Label text="From Date" required="true" design="Bold" class="sapUiTinyMarginTop"/>
+								<m:DatePicker change="onFDate" value="{'path':'formModel>/fDate', 'type':'sap.ui.model.type.Date', 'formatOptions': {'pattern': 'dd-MM-yyyy'}}" 
+									displayFormat="dd-MM-yyyy" minDate="{formModel>/minDate}" id="idFDate"/>
+
+								<m:Label text="To Date" required="true" design="Bold" class="sapUiTinyMarginTop"/>
+								<m:DatePicker change="onTDate" value="{'path':'formModel>/tDate', 'type':'sap.ui.model.type.Date', 'formatOptions': {'pattern': 'dd-MM-yyyy'}}" 
+									displayFormat="dd-MM-yyyy" minDate="{formModel>/minDate}" id="idTDate"/>
+
+								<m:Label text="No. of Days" required="true" design="Bold" class="sapUiTinyMarginTop"/>
+								<m:Text text="{formModel>/days}"/>
+
+								<m:Label text="Select Half" required="true" design="Bold" visible="{formModel>/halfType}"/>
+								<m:ComboBox id="idHalf" selectionChange="onSelectionChangeOfHalf" visible="{formModel>/halfType}">
+									<core:Item key="First_Half" text="First Half" />
+									<core:Item key="Second_Half" text="Second Half" />
+								</m:ComboBox>
+
+								<m:Label text="Reason" required="true" design="Bold" class="sapUiTinyMarginTop"/>	
+								<m:TextArea rows="4" maxLength="100" id="idReason" value="{formModel>/reason}" liveChange="onReasonChange"
+									placeholder="Write only 100 characters"/>
+								<m:FlexBox alignContent="End" justifyContent="End">
+									<m:Text id="idText" text="100 characters remaining"/>	
+								</m:FlexBox>
+								
+							
+								<m:Button text="Submit" class="sapUiSmallMarginTop" type="Emphasized" press="onPress"/>			
+							</f:content>
+						</f:SimpleForm>
+					</m:VBox>
+				</layout:sideContent>
+            </layout:DynamicSideContent>
+        </m:content>
+    </m:Page>
+</mvc:View>

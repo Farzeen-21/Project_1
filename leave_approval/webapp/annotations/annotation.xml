@@ -1,0 +1,110 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/odata/v4/team-leave-planner/$metadata">
+        <edmx:Include Namespace="teamLeavePlannerService"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO">
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>TO_EMPLOYEE/EMPLOYEE_ID</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="EMPLOYEE_ID"/>
+                            <PropertyValue Property="Label" String="Employee Id"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TO_EMPLOYEE/EMPLOYEE_NAME"/>
+                            <PropertyValue Property="Label" String="Employee Name"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="START_DATE"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="END_DATE"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TO_LEAVE_TYPE/DESCRIPTION"/>
+                            <PropertyValue Property="Label" String="Leave Type"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TO_STATUS/DESCRIPTION"/>
+                            <PropertyValue Property="Label" String="Lead Status"/>
+                            <PropertyValue Property="Criticality" Path="TO_STATUS/CRITICALITY"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Main">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="LEAVE_ID"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="EMPLOYEE_ID"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="START_DATE"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="END_DATE"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="NO_OF_LEAVES"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="LEAVE_NOTES"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="TO_STATUS/DESCRIPTION"/>
+                                    <PropertyValue Property="Criticality" Path="TO_STATUS/CRITICALITY"/>
+                                    <PropertyValue Property="CriticalityRepresentation" EnumMember="UI.CriticalityRepresentationType/WithIcon"/>
+                                    <PropertyValue Property="Label" String="Status"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="{@i18n>leaveDetails}"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Project Details"/>
+                            <PropertyValue Property="ID" String="ProjectDetails"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ProjectDetails"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="ProjectDetails">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection/>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.MASTER_STATUS/DESCRIPTION">
+                <Annotation Term="Common.Label" String="TO_STATUS/DESCRIPTION"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.EntityContainer/TEAM_LEAVE_INFO">
+                <Annotation Term="UI.DeleteHidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.MASTER_EMPLOYEE/EMPLOYEE_ID">
+                <Annotation Term="Common.Label" String="{@i18n>emplyeeId}"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

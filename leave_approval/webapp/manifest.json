@@ -1,0 +1,207 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "com.ibspl.leaveapproval",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.16.1",
+      "toolsId": "4904b6e2-1110-445b-b549-d0ca28421f80"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/team-leave-planner/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      },
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "leave_approval-display": {
+          "semanticObject": "leave_approval",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.131.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.ibspl.leaveapproval.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "TEAM_LEAVE_INFOList",
+          "target": "TEAM_LEAVE_INFOList"
+        },
+        {
+          "pattern": "TEAM_LEAVE_INFO({key}):?query:",
+          "name": "TEAM_LEAVE_INFOObjectPage",
+          "target": "TEAM_LEAVE_INFOObjectPage"
+        }
+      ],
+      "targets": {
+        "TEAM_LEAVE_INFOList": {
+          "type": "Component",
+          "id": "TEAM_LEAVE_INFOList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/TEAM_LEAVE_INFO",
+              "variantManagement": "Page",
+              "navigation": {
+                "TEAM_LEAVE_INFO": {
+                  "detail": {
+                    "route": "TEAM_LEAVE_INFOObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  },
+                  "columns": {
+                    "No_of_Days": {
+                      "header": "No. Of Days",
+                      "position": {
+                        "anchor": "DataField::END_DATE",
+                        "placement": "After"
+                      },
+                      "template": "com.ibspl.leaveapproval.ext.fragment.No_of_Days"
+                    }
+                  }
+                }
+              },
+              "initialLoad": "Enabled"
+            }
+          }
+        },
+        "TEAM_LEAVE_INFOObjectPage": {
+          "type": "Component",
+          "id": "TEAM_LEAVE_INFOObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/TEAM_LEAVE_INFO",
+              "showShareButton": false,
+              "content": {
+                "footer": {
+                  "actions": {
+                    "IdApprove": {
+                      "press": "com.ibspl.leaveapproval.ext.controller.Approve.onApprove",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "Approve"
+                    },
+                    "IdReject": {
+                      "press": "com.ibspl.leaveapproval.ext.controller.Reject.onReject",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "Reject"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ListReport.ListReportController": {
+            "controllerName": "com.ibspl.leaveapproval.ext.controller.ListReportExt"
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "comibsplleaveapproval"
+  }
+}

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="teamLeavePlannerService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotation Term="Core.Links">
+                <Collection>
+                    <Record>
+                        <PropertyValue Property="rel" String="author"/>
+                        <PropertyValue Property="href" String="https://cap.cloud.sap"/>
+                    </Record>
+                </Collection>
+            </Annotation>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="MASTER_EMPLOYEE" EntityType="teamLeavePlannerService.MASTER_EMPLOYEE">
+                    <NavigationPropertyBinding Path="TO_PROJECT" Target="MASTER_PROJECT"/>
+                </EntitySet>
+                <EntitySet Name="MASTER_PROJECT" EntityType="teamLeavePlannerService.MASTER_PROJECT"/>
+                <EntitySet Name="MASTER_LEAVE_TYPE" EntityType="teamLeavePlannerService.MASTER_LEAVE_TYPE"/>
+                <EntitySet Name="MASTER_HOLIDAY_CALENDAR" EntityType="teamLeavePlannerService.MASTER_HOLIDAY_CALENDAR"/>
+                <EntitySet Name="MASTER_LEAVE_EVENTS" EntityType="teamLeavePlannerService.MASTER_LEAVE_EVENTS"/>
+                <EntitySet Name="MASTER_STATUS" EntityType="teamLeavePlannerService.MASTER_STATUS"/>
+                <EntitySet Name="TEAM_LEAVE_INFO" EntityType="teamLeavePlannerService.TEAM_LEAVE_INFO">
+                    <NavigationPropertyBinding Path="TO_EMPLOYEE" Target="MASTER_EMPLOYEE"/>
+                    <NavigationPropertyBinding Path="TO_STATUS" Target="MASTER_STATUS"/>
+                    <NavigationPropertyBinding Path="TO_LEAVE_TYPE" Target="MASTER_LEAVE_TYPE"/>
+                </EntitySet>
+                <EntitySet Name="LEAVE_EVENT_LOG" EntityType="teamLeavePlannerService.LEAVE_EVENT_LOG">
+                    <NavigationPropertyBinding Path="TO_EVENT" Target="MASTER_LEAVE_EVENTS"/>
+                </EntitySet>
+                <ActionImport Name="TeamLeaveAction" Action="teamLeavePlannerService.TeamLeaveAction"/>
+                <ActionImport Name="TeamLeaveApproval" Action="teamLeavePlannerService.TeamLeaveApproval"/>
+            </EntityContainer>
+            <EntityType Name="MASTER_EMPLOYEE">
+                <Key>
+                    <PropertyRef Name="EMPLOYEE_ID"/>
+                    <PropertyRef Name="PROJECT"/>
+                </Key>
+                <Property Name="EMPLOYEE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="PROJECT" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="EMPLOYEE_NAME" Type="Edm.String" MaxLength="100"/>
+                <Property Name="DESIGNATION" Type="Edm.String" MaxLength="30"/>
+                <Property Name="MOBILE_NO" Type="Edm.String" MaxLength="20"/>
+                <Property Name="EMAIL_ID" Type="Edm.String" MaxLength="50"/>
+                <Property Name="REPORTING_MANAGER" Type="Edm.String" MaxLength="30"/>
+                <Property Name="REPORTING_LEAD" Type="Edm.String" MaxLength="30"/>
+                <Property Name="GENERAL_LEAVE_BALANCE" Type="Edm.Decimal" Scale="variable"/>
+                <Property Name="CASUAL_LEAVE_BALANCE" Type="Edm.Decimal" Scale="variable"/>
+                <NavigationProperty Name="TO_PROJECT" Type="Collection(teamLeavePlannerService.MASTER_PROJECT)"/>
+            </EntityType>
+            <EntityType Name="MASTER_PROJECT">
+                <Key>
+                    <PropertyRef Name="CODE"/>
+                </Key>
+                <Property Name="CODE" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="50"/>
+                <Property Name="PROJECT_TYPE" Type="Edm.String" MaxLength="20"/>
+            </EntityType>
+            <EntityType Name="MASTER_LEAVE_TYPE">
+                <Key>
+                    <PropertyRef Name="CODE"/>
+                </Key>
+                <Property Name="CODE" Type="Edm.String" MaxLength="15" Nullable="false"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <EntityType Name="MASTER_HOLIDAY_CALENDAR">
+                <Key>
+                    <PropertyRef Name="SR_NO"/>
+                </Key>
+                <Property Name="SR_NO" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="DATE" Type="Edm.Date"/>
+                <Property Name="DAY" Type="Edm.String" MaxLength="20"/>
+                <Property Name="HOLIDAY_DESC" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <EntityType Name="MASTER_LEAVE_EVENTS">
+                <Key>
+                    <PropertyRef Name="CODE"/>
+                </Key>
+                <Property Name="CODE" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="50"/>
+            </EntityType>
+            <EntityType Name="MASTER_STATUS">
+                <Key>
+                    <PropertyRef Name="CODE"/>
+                </Key>
+                <Property Name="CODE" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="30"/>
+                <Property Name="CRITICALITY" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="TEAM_LEAVE_INFO">
+                <Key>
+                    <PropertyRef Name="LEAVE_ID"/>
+                    <PropertyRef Name="EMPLOYEE_ID"/>
+                </Key>
+                <Property Name="LEAVE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="EMPLOYEE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="LEAVE_TYPE" Type="Edm.String" MaxLength="15"/>
+                <Property Name="NO_OF_LEAVES" Type="Edm.Decimal" Scale="variable"/>
+                <Property Name="START_DATE" Type="Edm.DateTimeOffset"/>
+                <Property Name="END_DATE" Type="Edm.DateTimeOffset"/>
+                <Property Name="LEAVE_STATUS" Type="Edm.Int32" DefaultValue="1"/>
+                <Property Name="LEAVE_NOTES" Type="Edm.String" MaxLength="100"/>
+                <Property Name="IS_DELETED" Type="Edm.String" MaxLength="3"/>
+                <NavigationProperty Name="TO_EMPLOYEE" Type="teamLeavePlannerService.MASTER_EMPLOYEE">
+                    <ReferentialConstraint Property="EMPLOYEE_ID" ReferencedProperty="EMPLOYEE_ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="TO_STATUS" Type="teamLeavePlannerService.MASTER_STATUS">
+                    <ReferentialConstraint Property="LEAVE_STATUS" ReferencedProperty="CODE"/>
+                </NavigationProperty>
+                <NavigationProperty Name="TO_LEAVE_TYPE" Type="teamLeavePlannerService.MASTER_LEAVE_TYPE">
+                    <ReferentialConstraint Property="LEAVE_TYPE" ReferencedProperty="CODE"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="LEAVE_EVENT_LOG">
+                <Key>
+                    <PropertyRef Name="LEAVE_ID"/>
+                    <PropertyRef Name="EVENT_NO"/>
+                </Key>
+                <Property Name="LEAVE_ID" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="EVENT_NO" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="EVENT_CODE" Type="Edm.String" MaxLength="10"/>
+                <Property Name="USER_ID" Type="Edm.String" MaxLength="100"/>
+                <Property Name="USER_NAME" Type="Edm.String" MaxLength="100"/>
+                <Property Name="REMARK" Type="Edm.String" MaxLength="100"/>
+                <Property Name="COMMENT" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="CREATED_ON" Type="Edm.DateTimeOffset" Precision="7"/>
+                <NavigationProperty Name="TO_EVENT" Type="Collection(teamLeavePlannerService.MASTER_LEAVE_EVENTS)"/>
+            </EntityType>
+            <Action Name="TeamLeaveAction" IsBound="false">
+                <Parameter Name="action" Type="Edm.String"/>
+                <Parameter Name="teamLeaveInfo" Type="Collection(teamLeavePlannerService.TEAM_LEAVE_INFO)" Nullable="true"/>
+                <Parameter Name="leaveEvents" Type="Collection(teamLeavePlannerService.LEAVE_EVENT_LOG)" Nullable="true"/>
+                <ReturnType Type="Collection(Edm.String)" Nullable="true"/>
+            </Action>
+            <Action Name="TeamLeaveApproval" IsBound="false">
+                <Parameter Name="action" Type="Edm.String"/>
+                <Parameter Name="teamLeaveInfo" Type="Collection(teamLeavePlannerService.TEAM_LEAVE_INFO)" Nullable="true"/>
+                <Parameter Name="leaveEvents" Type="Collection(teamLeavePlannerService.LEAVE_EVENT_LOG)" Nullable="true"/>
+                <ReturnType Type="Collection(Edm.String)" Nullable="true"/>
+            </Action>
+            <Annotations Target="teamLeavePlannerService.MASTER_EMPLOYEE/EMPLOYEE_ID">
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="CollectionPath" String="MASTER_EMPLOYEE"/>
+                        <PropertyValue Property="Label" String="Employee Id"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="EMPLOYEE_ID"/>
+                                    <PropertyValue Property="ValueListProperty" String="EMPLOYEE_ID"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="EMPLOYEE_NAME"/>
+                                    <PropertyValue Property="ValueListProperty" String="EMPLOYEE_NAME"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO">
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>LEAVE_ID</PropertyPath>
+                        <PropertyPath>TO_EMPLOYEE/EMPLOYEE_ID</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="LEAVE_ID"/>
+                            <PropertyValue Property="Label" String="Leave Id"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="EMPLOYEE_ID"/>
+                            <PropertyValue Property="Label" String="Employee Id"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TO_EMPLOYEE/EMPLOYEE_NAME"/>
+                            <PropertyValue Property="Label" String="Employee Name"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TO_LEAVE_TYPE/DESCRIPTION"/>
+                            <PropertyValue Property="Label" String="Leave Type"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NO_OF_LEAVES"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="START_DATE"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="END_DATE"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="TO_STATUS/DESCRIPTION"/>
+                            <PropertyValue Property="Label" String="Lead Status"/>
+                            <PropertyValue Property="Criticality" Path="TO_STATUS/CRITICALITY"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="PO Header"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Main">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="LEAVE_ID"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="EMPLOYEE_ID"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/LEAVE_ID">
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="CollectionPath" String="TEAM_LEAVE_INFO"/>
+                        <PropertyValue Property="Label" String="Leave Id"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="LEAVE_ID"/>
+                                    <PropertyValue Property="ValueListProperty" String="LEAVE_ID"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.Label" String="Leave ID"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/EMPLOYEE_ID">
+                <Annotation Term="Common.Label" String="Employee ID"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/LEAVE_TYPE">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Leave Type"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/NO_OF_LEAVES">
+                <Annotation Term="Common.Label" String="Number of Leaves"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/START_DATE">
+                <Annotation Term="Common.Label" String="Start Date"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/END_DATE">
+                <Annotation Term="Common.Label" String="End Date"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/LEAVE_STATUS">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Leave Status"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/LEAVE_NOTES">
+                <Annotation Term="Common.Label" String="Leave Notes"/>
+            </Annotations>
+            <Annotations Target="teamLeavePlannerService.TEAM_LEAVE_INFO/IS_DELETED">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Is Deleted"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
