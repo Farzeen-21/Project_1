@@ -13,13 +13,14 @@ sap.ui.define([
     'use strict';
     var appModulePath;
     var rowObj;
+    var that;
     var DialogType = mobileLibrary.DialogType;
     var ButtonType = mobileLibrary.ButtonType;
 
     return {
 
         onApprove: function (oEvent) {
-            
+            that = this;
             // var appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             var appId = 'com.ibspl.leaveapproval';
             var appPath = appId.replaceAll(".", "/");
@@ -78,7 +79,15 @@ sap.ui.define([
                                     
                                     sap.ui.getCore().byId("approveNote").setValue("");
                                     var msg = oData.value[0];
-                                    MessageBox.success(oData.value[0]);
+                                    MessageBox.success(oData.value[0], {
+                                        actions: [MessageBox.Action.OK],
+                                        onClose: function (oAction) {
+                                            if (oAction === "OK") {
+                                                debugger;
+                                                that._controller._oAppComponent.getRouter().navTo("TEAM_LEAVE_INFOList")
+                                            }
+                                        }
+                                    });
                                 },
                                 error: function (oError) {
                                     

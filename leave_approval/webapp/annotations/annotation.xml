@@ -81,17 +81,41 @@
                             <PropertyValue Property="Label" String="{@i18n>leaveDetails}"/>
                             <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Main"/>
                         </Record>
-                        <Record Type="UI.ReferenceFacet">
-                            <PropertyValue Property="Label" String="Project Details"/>
-                            <PropertyValue Property="ID" String="ProjectDetails"/>
-                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ProjectDetails"/>
-                        </Record>
                     </Collection>
                 </Annotation>
                 <Annotation Term="UI.FieldGroup" Qualifier="ProjectDetails">
                     <Record Type="UI.FieldGroupType">
                         <PropertyValue Property="Data">
                             <Collection/>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.HeaderInfo">
+                    <Record>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value">
+                                    <Apply Function="odata.concat">
+                                        <String>Employee Name</String>  
+                                        <String> : </String>  
+                                        <Path>TO_EMPLOYEE/EMPLOYEE_NAME</Path>            
+                                    </Apply>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="TypeName" String="Detail Page"/>
+                        <PropertyValue Property="TypeNamePlural" String="Details"/>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value">
+                                    <Apply Function="odata.concat">
+                                        <String>Employee ID</String>  
+                                        <String> : </String>  
+                                        <Path>EMPLOYEE_ID</Path>            
+                                    </Apply>
+                                </PropertyValue>
+                            </Record>
+                            
                         </PropertyValue>
                     </Record>
                 </Annotation>

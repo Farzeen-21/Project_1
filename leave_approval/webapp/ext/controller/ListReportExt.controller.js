@@ -20,7 +20,8 @@ sap.ui.define([
 			 */
 
 			onInit: function () {
-				
+				debugger;
+				this.base.getAppComponent().getRouter().getRoute('TEAM_LEAVE_INFOList').attachPatternMatched(this._onRouteMatched, this);
 				context = this;
 				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
 				var oModel = this.base.getExtensionAPI().getModel();
@@ -31,19 +32,30 @@ sap.ui.define([
 			},
 
 			onAfterRendering: function () {
-				
-				this.getUserAttribute();
-				this.getUserAttribute();
+				debugger;
+				// this.getUserAttribute();
+				// this.getUserAttribute();
 				//trying to apply filter by getting getTable()
 				// do not forget this
+			},
+
+			onBeforeRebindTable: function () {
+				debugger;
 			}
 
 		},
+
+		_onRouteMatched: function (oEvent) {
+			debugger;
+			this.getUserAttribute();
+		},
+
+
 		getUserAttribute() {
 			
 			var oModel = new JSONModel({
-				userId: "supritha.m@intellectbizware.com",
-				userName: "Supritha"
+				userId: "teju.moolya@gmail.com",
+				userName: "Teju"
 			});
 			sap.ui.getCore().setModel(oModel, "userAttriJson");
 
@@ -60,13 +72,17 @@ sap.ui.define([
 
 		getEmployeeDetails: function (sUserId, msg) {
 			
-			var path = appModulePath + "/odata/v4/team-leave-planner/MASTER_EMPLOYEE?$filter=(EMAIL_ID eq '" + sUserId + "')";
+			var path = appModulePath + "/odata/v4/team-leave-planner/MASTER_EMPLOYEE?$expand=TO_PROJECT&$filter=(EMAIL_ID eq '" + sUserId + "')";
 			$.ajax({
 				url: path,
 				type: 'GET',
 				contentType: 'application/json',
 				success: function (oData, response) {
-					
+					debugger;
+
+					var oModel1 = new JSONModel(oData);
+					sap.ui.getCore().setModel(oModel1, "master_emp");
+
 					sap.ui.getCore().getModel("userAttriJson").setProperty("/CASUAL_LEAVE_BALANCE", Number(oData.value[0].CASUAL_LEAVE_BALANCE));
 					sap.ui.getCore().getModel("userAttriJson").setProperty("/DESIGNATION", oData.value[0].DESIGNATION);
 					sap.ui.getCore().getModel("userAttriJson").setProperty("/EMAIL_ID", oData.value[0].EMAIL_ID);
@@ -111,7 +127,20 @@ sap.ui.define([
 				const oFilter3 = new sap.ui.model.Filter("IS_DELETED", sap.ui.model.FilterOperator.EQ, null);
 				oBinding.filter([oFilter1, oFilter2, oFilter3]);
 			}
-			
-        }
+			debugger;
+			context._controller.onAfterRendering()
+        },
+
+		onSelectionChange: function (oEvent) {
+			debugger;
+		},
+
+		onTableRowSelection: function (oEvent) {
+			debugger;
+		},
+
+		onBeforeRebindTable: function (oEvent) {
+			debugger;
+		},
 	});
 });

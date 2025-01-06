@@ -179,6 +179,18 @@
                       "text": "Reject"
                     }
                   }
+                },
+                "body": {
+                  "sections": {
+                    "Project_table": {
+                      "template": "com.ibspl.leaveapproval.ext.fragment.Project_table",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "FieldGroup#Main"
+                      },
+                      "title": "Project Details"
+                    }
+                  }
                 }
               }
             }
@@ -190,7 +202,11 @@
       "extensions": {
         "sap.ui.controllerExtensions": {
           "sap.fe.templates.ListReport.ListReportController": {
-            "controllerName": "com.ibspl.leaveapproval.ext.controller.ListReportExt"
+            "controllerName": "com.ibspl.leaveapproval.ext.controller.ListReportExt",
+            "onBeforeRebindTable": "com.ibspl.leaveapproval.ext.controller.ListReportExt.onBeforeRebindTable"
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": {
+            "controllerName": "com.ibspl.leaveapproval.ext.controller.ObjectReportExt"
           }
         }
       }

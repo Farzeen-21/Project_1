@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:macros="sap.fe.macros">
+	<VBox core:require="{ handler: 'com/ibspl/leaveapproval/ext/fragment/Project_table'}">
+		<Table id="idMasterTable" autoPopinMode="true"
+			sticky="HeaderToolbar,ColumnHeaders"
+			items="{master_emp>/TO_PROJECT}" >
+			<columns>
+				<Column ><Text text="Code" /></Column>
+				<Column ><Text text="Type" /></Column>
+				<Column ><Text text="Description" /></Column>
+			</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<ObjectIdentifier title="{master_emp>CODE}"/>
+							<Text text="{master_emp>PROJECT_TYPE}"/>
+							<Text text="{master_emp>DESCRIPTION}" />
+						</cells>
+					</ColumnListItem>
+				</items>
+		</Table>
+	</VBox>
+</core:FragmentDefinition>

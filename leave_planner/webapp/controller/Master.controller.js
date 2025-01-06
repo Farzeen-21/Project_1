@@ -209,7 +209,7 @@ sap.ui.define([
                 success: function (oData, response) {
                     debugger;
                     var oModel = new JSONModel(oData);
-                    context.getView().setModel(oModel, "tableData");
+                    context.getOwnerComponent().setModel(oModel, "tableData");
                     var addLen = oData.value.length;
                     context.getView().byId("trAddId").setVisibleRowCount(addLen);
                     context.getOwnerComponent().getModel("userAttriJson").setProperty("/COUNT", addLen);
