@@ -77,6 +77,36 @@
 							<!-- <ObjectPageSection title="Plan Requests ({userAttriJson>/COUNT})" id="firstSection" visible="{formModel>/tableVisible}"> -->
 							<ObjectPageSection title="Plan Requests ({userAttriJson>/COUNT})" id="firstSection" >
 								<ObjectPageSubSection>
+									<!-- <m:Table  id="idMasterTable" autoPopinMode="true" fixedLayout="true" inset="false"
+										sticky="HeaderToolbar,ColumnHeaders" showSeparators="Inner" growing="true" growingThreshold="50"
+										items="{ path: 'tableData>/value', sorter: { path: 'START_DATE', descending : true } }" >
+										<m:columns>
+											<m:Column width="10rem" hAlign="Center"><m:Text text="Start Date" /></m:Column>
+											<m:Column width="10rem" hAlign="Center"><m:Text text="End Date" /></m:Column>
+											<m:Column width="6rem" hAlign="Center"><m:Text text="No. of Days" /></m:Column>
+											<m:Column width="13rem" hAlign="Center"><m:Text text="Leave Type" /></m:Column>
+											<m:Column width="15rem" ><m:Text text="Leave Status" /></m:Column>
+											<m:Column ><m:Text text="Leave Notes" wrapping="true"/></m:Column>
+											<m:Column width="2rem" hAlign="Center"><m:Text text="" /></m:Column>
+										</m:columns>
+										<m:items>
+											<m:ColumnListItem>
+												<m:cells>
+													<m:Text  text="{path:'tableData>START_DATE',formatter:'.formatter.formatDate'}" />
+													<m:Text  text="{path:'tableData>END_DATE',formatter:'.formatter.formatDate'}" />
+													<m:Text  text="{path:'tableData>NO_OF_LEAVES'}" />
+													<m:Text  text="{path:'tableData>LEAVE_TYPE',formatter:'.formatter.formatLeaveType'}" />
+													<m:ObjectStatus text="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatus'}"
+																		state="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusState'}"
+																		icon="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusIcon'}"/>
+													<m:Text  text="{path:'tableData>LEAVE_NOTES'}" />    
+													<core:Icon src="sap-icon://delete" color="red" press="onDelete" 
+																		visible="{= ${tableData>LEAVE_STATUS} === 1 ? true : false}"/>
+													
+												</m:cells>
+											</m:ColumnListItem>
+										</m:items>
+									</m:Table> -->
 									<ui:Table id="trAddId" rows="{tableData>/value}" selectionMode="None" ariaLabelledBy="title">
 														<ui:extension>
 															<m:OverflowToolbar style="Clear">
@@ -145,7 +175,7 @@
 										</smartFilterBar:controlConfiguration>
 									</smartFilterBar:SmartFilterBar> -->
 
-									<!-- <smartTable:SmartTable  id="smartTable_ResponsiveTable" smartFilterId="idsmartFilterBar" 
+									<!-- <smartTable:SmartTable  id="smartTable_ResponsiveTable"  
 										tableType="ResponsiveTable" editable="false" entitySet="TEAM_LEAVE_INFO" 
 										useVariantManagement="true" useTablePersonalisation="true" header="Table Items" 
 										showRowCount="true" enableExport="true" beforeRebindTable="onBeforeRebindTable"

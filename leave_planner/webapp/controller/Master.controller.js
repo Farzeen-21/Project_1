@@ -55,7 +55,7 @@ sap.ui.define([
         },
 
         onAdd: function (msg) {
-
+            debugger;
             var dynamicSideContentState = this.getView().byId("idDynamicSideContent").getShowSideContent();
             if (dynamicSideContentState === true) {
                 if (Device.system.phone === true) {
@@ -154,8 +154,8 @@ sap.ui.define([
         getUserAttribute() {
            
             var oModel = new JSONModel({
-                userId: "farzeen.s@intellectbizware.com",
-                userName: "Farzeen Bano"
+                userId: "vishal.s@intellectbizware.com",
+                userName: "Vishal"
             });
             context.getOwnerComponent().setModel(oModel, "userAttriJson");
             context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getData().userId);

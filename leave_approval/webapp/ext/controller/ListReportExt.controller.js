@@ -128,7 +128,7 @@ sap.ui.define([
 				oBinding.filter([oFilter1, oFilter2, oFilter3]);
 			}
 			debugger;
-			context._controller.onAfterRendering()
+			// context._controller.onAfterRendering()
         },
 
 		onSelectionChange: function (oEvent) {
