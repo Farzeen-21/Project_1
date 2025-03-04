@@ -1,0 +1,15 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
+	<Dialog id="idApproveDialog" icon="sap-icon://message-information" title="Approve" 
+        draggable="true" resizable="true" contentWidth="34rem" class="sapUiSizeCompact">
+		<VBox class="sapUiSmallMarginTop">
+			<Label text="Do you want to approve this request?" design="Bold"  
+                class="sapUiSmallMarginBegin"/>
+			<TextArea class="sapUiSmallMarginBegin" id="idAppComment" width="32rem" value="" rows="3" 
+                maxLength="1000" showExceededText="true" required="false" liveChange="handleLiveChange"/>
+		</VBox>
+		<buttons>
+			<Button icon="sap-icon://complete" text="Approve" type="Accept" id="idButApprove" press="onSubmitApproval" tooltip="Approve" />
+			<Button icon="sap-icon://cancel" text="Cancel" press="ApproveClose" tooltip="Cancel"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

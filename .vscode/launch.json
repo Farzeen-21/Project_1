@@ -240,6 +240,326 @@
         "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
         "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/leave_management\"}"
       }
+    },
+    {
+      "name": "Start leave_management",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_management",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--open",
+        "test/flpSandbox.html#comibsplleavemanagement-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "DEBUG": "--inspect",
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_management\"}"
+      }
+    },
+    {
+      "name": "Start leave_management Local",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_management",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-local.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemanagement-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_management\"}"
+      }
+    },
+    {
+      "name": "Start leave_management Mock",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_management",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-mock.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemanagement-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_management\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_mgmt",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "DEBUG": "--inspect",
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_mgmt\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt Local",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_mgmt",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-local.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_mgmt\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt Mock",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_mgmt",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-mock.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_mgmt\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt_2",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage_2/leave_mgmt_2",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt2-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "DEBUG": "--inspect",
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage_2/leave_mgmt_2\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt_2 Local",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage_2/leave_mgmt_2",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-local.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt2-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage_2/leave_mgmt_2\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt_2 Mock",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage_2/leave_mgmt_2",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-mock.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt2-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage_2/leave_mgmt_2\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_mgmt",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "DEBUG": "--inspect",
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_mgmt\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt Local",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_mgmt",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-local.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_mgmt\"}"
+      }
+    },
+    {
+      "name": "Start leave_mgmt Mock",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/ibs_mta_leave_manage/leave_mgmt",
+      "runtimeExecutable": "npx",
+      "windows": {
+        "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+        "fiori",
+        "run"
+      ],
+      "args": [
+        "--config",
+        "./ui5-mock.yaml",
+        "--open",
+        "test/flpSandbox.html#comibsplleavemgmt-display"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "env": {
+        "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false",
+        "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/home/user/projects/ibs_mta_leave_manage/leave_mgmt\"}"
+      }
     }
   ]
 }

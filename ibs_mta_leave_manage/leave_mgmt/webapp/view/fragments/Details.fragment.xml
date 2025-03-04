@@ -1,0 +1,32 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
+	<ResponsivePopover  title="{AppointDetail>/title}" class="sapUiResponsivePadding--header" 
+		placement="Auto" contentWidth="280px">
+		<f:SimpleForm id="appointmentEditForm" editable="false" layout="ResponsiveGridLayout" 
+			labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="4"
+			emptySpanXL="3" emptySpanL="3" emptySpanM="3" emptySpanS="3"
+			columnsXL="1" columnsL="1" columnsM="1"
+			adjustLabelSpan="false" singleContainerFullSize="false">
+			
+			<Label text="From" />
+			<Text text="{path: 'AppointDetail>/startDate', formatter:'.formatter.formatDate'}"/>
+			
+			<Label text="To" />
+			<Text text="{path: 'AppointDetail>/endDate', formatter:'.formatter.formatDate'}"/>
+
+			<Label text="Reason" />
+			<Text text="{AppointDetail>/text}"/>
+
+			<Label text="Description" visible="false"/>
+			<Text text="{path: 'AppointDetail>/description'}" visible="false"/>
+
+			<Label text="Key" visible="false"/>
+			<Text text="{path: 'AppointDetail>/key'}" visible="false"/>
+		</f:SimpleForm>
+		<beginButton>
+			<Button text="Aprrove" type="Success" press="onApprove2"/>
+		</beginButton>
+		<endButton>
+			<Button text="Reject" type="Reject" icon="sap-icon://decline" press="onReject2"/>
+		</endButton>
+	</ResponsivePopover>
+</core:FragmentDefinition>

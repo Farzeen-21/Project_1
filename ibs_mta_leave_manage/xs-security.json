@@ -1,0 +1,25 @@
+{
+  "xsappname": "ibs_mta_leave_manage",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [
+    {
+      "name": "uaa.user",
+      "description": "UAA"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Token_Exchange",
+      "description": "UAA",
+      "scope-references": [
+        "uaa.user"
+      ]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://a20ccda8trial-dev-ibs-mta-leave-manage-approuter.cfapps.us10-001.hana.ondemand.com/"      
+    ]
+  }
+}

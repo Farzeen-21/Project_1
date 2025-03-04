@@ -1,0 +1,19 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.f" xmlns:card="sap.f.cards"
+    xmlns:form="sap.ui.layout.form">
+	<Popover placement="Bottom" showHeader="false" contentWidth="250px">
+        <VBox class="sapUiTinyMargin">
+            <HBox>
+                <Label text="GL Balance : "></Label>
+                <Text text="  {formModel>/GL_LeaveBalance}" class="sapUiTinyMarginBegin" />
+            </HBox>
+            <HBox>
+                <Label text="CL Balance : "></Label>
+                <Text text="  {formModel>/CL_LeaveBalance}" class="sapUiTinyMarginBegin" />
+            </HBox>
+            <HBox>
+                <Label text="Projects : "></Label>
+                <Text text="  {formModel>/PROJECTS}" class="sapUiTinyMarginBegin" />
+            </HBox>
+        </VBox>
+	</Popover>
+</core:FragmentDefinition>

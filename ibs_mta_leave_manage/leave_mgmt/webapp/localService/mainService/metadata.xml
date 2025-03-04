@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="team_leave_planner" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotation Term="Core.Links">
+                <Collection>
+                    <Record>
+                        <PropertyValue Property="rel" String="author"/>
+                        <PropertyValue Property="href" String="https://cap.cloud.sap"/>
+                    </Record>
+                </Collection>
+            </Annotation>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="LeaveRequest" EntityType="team_leave_planner.LeaveRequest">
+                    <NavigationPropertyBinding Path="TO_LEAVE_TYPE" Target="MasterLeaveType"/>
+                </EntitySet>
+                <EntitySet Name="LeaveEventLog" EntityType="team_leave_planner.LeaveEventLog"/>
+                <EntitySet Name="MasterEmployee" EntityType="team_leave_planner.MasterEmployee">
+                    <NavigationPropertyBinding Path="TO_MREPORTING_EMPLOYEE" Target="MasterEmployee"/>
+                    <NavigationPropertyBinding Path="TO_LREPORTING_EMPLOYEE" Target="MasterEmployee"/>
+                    <NavigationPropertyBinding Path="TO_LEAVE" Target="LeaveRequest"/>
+                    <NavigationPropertyBinding Path="TO_DESIGNATION_CODE" Target="MasterDesignation"/>
+                </EntitySet>
+                <EntitySet Name="employeeProject" EntityType="team_leave_planner.employeeProject">
+                    <NavigationPropertyBinding Path="TO_PROJECT_CODE" Target="MasterProject"/>
+                    <NavigationPropertyBinding Path="TO_EMPLOYEE_ID" Target="MasterEmployee"/>
+                </EntitySet>
+                <EntitySet Name="MasterDesignation" EntityType="team_leave_planner.MasterDesignation"/>
+                <EntitySet Name="MasterProject" EntityType="team_leave_planner.MasterProject"/>
+                <EntitySet Name="MasterLeaveType" EntityType="team_leave_planner.MasterLeaveType"/>
+                <ActionImport Name="TeamLeaveAction" Action="team_leave_planner.TeamLeaveAction"/>
+                <ActionImport Name="InsertMasterData" Action="team_leave_planner.InsertMasterData"/>
+                <FunctionImport Name="getEmployeeLeaveData" Function="team_leave_planner.getEmployeeLeaveData"/>
+            </EntityContainer>
+            <EntityType Name="LeaveRequest">
+                <Key>
+                    <PropertyRef Name="LEAVE_ID"/>
+                </Key>
+                <Property Name="LEAVE_ID" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="EMPLOYEE_ID" Type="Edm.Int32"/>
+                <Property Name="LEAVE_TYPE" Type="Edm.String" MaxLength="15"/>
+                <Property Name="NO_OF_LEAVES" Type="Edm.Decimal" Precision="16" Scale="1"/>
+                <Property Name="START_DATE" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="END_DATE" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="LEAVE_STATUS" Type="Edm.Int32"/>
+                <Property Name="LEAVE_NOTES" Type="Edm.String" MaxLength="50"/>
+                <Property Name="IS_DELETED" Type="Edm.String" MaxLength="2"/>
+                <NavigationProperty Name="TO_LEAVE_TYPE" Type="team_leave_planner.MasterLeaveType">
+                    <ReferentialConstraint Property="LEAVE_TYPE" ReferencedProperty="CODE"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="LeaveEventLog">
+                <Key>
+                    <PropertyRef Name="LEAVE_ID"/>
+                    <PropertyRef Name="EVENT_NO"/>
+                </Key>
+                <Property Name="LEAVE_ID" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="EVENT_NO" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="EVENT_CODE" Type="Edm.String" MaxLength="5"/>
+                <Property Name="USER_ID" Type="Edm.String" MaxLength="50"/>
+                <Property Name="USER_NAME" Type="Edm.String" MaxLength="100"/>
+                <Property Name="REMARK" Type="Edm.String" MaxLength="100"/>
+                <Property Name="COMMENT" Type="Edm.String" MaxLength="50"/>
+                <Property Name="CREATED_ON" Type="Edm.DateTimeOffset" Precision="7"/>
+            </EntityType>
+            <EntityType Name="MasterEmployee">
+                <Key>
+                    <PropertyRef Name="EMPLOYEE_ID"/>
+                </Key>
+                <Property Name="EMPLOYEE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="EMPLOYEE_NAME" Type="Edm.String" MaxLength="100"/>
+                <Property Name="DESIGNATION_CODE" Type="Edm.Int32"/>
+                <Property Name="MOBILE_NO" Type="Edm.String" MaxLength="20"/>
+                <Property Name="EMAIL_ID" Type="Edm.String" MaxLength="50"/>
+                <Property Name="REPORTING_MANAGER_ID" Type="Edm.Int32"/>
+                <Property Name="REPORTING_LEAD_ID" Type="Edm.Int32"/>
+                <Property Name="GENERAL_LEAVE_BALANCE" Type="Edm.Decimal" Precision="16" Scale="1"/>
+                <Property Name="CASUAL_LEAVE_BALANCE" Type="Edm.Decimal" Precision="16" Scale="1"/>
+                <NavigationProperty Name="TO_MREPORTING_EMPLOYEE" Type="Collection(team_leave_planner.MasterEmployee)"/>
+                <NavigationProperty Name="TO_LREPORTING_EMPLOYEE" Type="Collection(team_leave_planner.MasterEmployee)"/>
+                <NavigationProperty Name="TO_LEAVE" Type="Collection(team_leave_planner.LeaveRequest)"/>
+                <NavigationProperty Name="TO_DESIGNATION_CODE" Type="Collection(team_leave_planner.MasterDesignation)"/>
+            </EntityType>
+            <EntityType Name="employeeProject">
+                <Key>
+                    <PropertyRef Name="EMPLOYEE_ID"/>
+                    <PropertyRef Name="PROJECT_CODE"/>
+                </Key>
+                <Property Name="EMPLOYEE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="PROJECT_CODE" Type="Edm.Int32" Nullable="false"/>
+                <NavigationProperty Name="TO_PROJECT_CODE" Type="Collection(team_leave_planner.MasterProject)"/>
+                <NavigationProperty Name="TO_EMPLOYEE_ID" Type="team_leave_planner.MasterEmployee">
+                    <ReferentialConstraint Property="EMPLOYEE_ID" ReferencedProperty="EMPLOYEE_ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="MasterDesignation">
+                <Key>
+                    <PropertyRef Name="SEQUENCE_ID"/>
+                    <PropertyRef Name="DESIGNATION_CODE"/>
+                    <PropertyRef Name="DESIGNATION_NAME"/>
+                    <PropertyRef Name="ROLE"/>
+                </Key>
+                <Property Name="SEQUENCE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="DESIGNATION_CODE" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="DESIGNATION_NAME" Type="Edm.String" MaxLength="50" Nullable="false"/>
+                <Property Name="ROLE" Type="Edm.String" MaxLength="50" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="MasterProject">
+                <Key>
+                    <PropertyRef Name="CODE"/>
+                </Key>
+                <Property Name="CODE" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="50"/>
+                <Property Name="IS_BILLABLE" Type="Edm.Boolean"/>
+            </EntityType>
+            <EntityType Name="MasterLeaveType">
+                <Key>
+                    <PropertyRef Name="CODE"/>
+                </Key>
+                <Property Name="CODE" Type="Edm.String" MaxLength="15" Nullable="false"/>
+                <Property Name="DESCRIPTION" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <Action Name="TeamLeaveAction" IsBound="false">
+                <Parameter Name="sAction" Type="Edm.String"/>
+                <Parameter Name="aLeaveRequestInfo" Type="Collection(team_leave_planner.LeaveRequest)" Nullable="true"/>
+                <Parameter Name="aLeaveEventLog" Type="Collection(team_leave_planner.LeaveEventLog)" Nullable="true"/>
+                <ReturnType Type="Edm.String"/>
+            </Action>
+            <Action Name="InsertMasterData" IsBound="false">
+                <Parameter Name="sAction" Type="Edm.String"/>
+                <Parameter Name="aEmployeeMaster" Type="Collection(team_leave_planner.MasterEmployee)" Nullable="true"/>
+                <Parameter Name="aEmployeeProject" Type="Collection(team_leave_planner.employeeProject)" Nullable="true"/>
+                <ReturnType Type="Edm.String"/>
+            </Action>
+            <Function Name="getEmployeeLeaveData" IsBound="false" IsComposable="false">
+                <Parameter Name="vEmployeeId" Type="Edm.Int32"/>
+                <Parameter Name="sRole" Type="Edm.String"/>
+                <ReturnType Type="Collection(Edm.String)" Nullable="true"/>
+            </Function>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

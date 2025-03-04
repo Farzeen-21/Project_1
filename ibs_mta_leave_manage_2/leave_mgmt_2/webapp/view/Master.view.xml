@@ -1,0 +1,270 @@
+<mvc:View controllerName="com.ibspl.leavemgmt2.controller.Master" xmlns:mvc="sap.ui.core.mvc"
+    xmlns:m="sap.m" xmlns="sap.uxap" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form" 
+    xmlns:core="sap.ui.core" xmlns:unified="sap.ui.unified"
+	xmlns:ui="sap.ui.table" xmlns:tnt="sap.tnt" xmlns:t="sap.suite.ui.commons" xmlns:fo="sap.f">
+     <m:Page id="page" title="{i18n>title}" showHeader="false" showFooter="false" class="sapUiSizeCompact">
+        <m:content>
+            <layout:DynamicSideContent id="idDynamicSideContent" class="sapUiSizeCompact" 
+                containerQuery="true" sideContentFallDown="BelowM"
+				breakpointChanged="handleBreakpointChangeEvent" showSideContent="true">
+                <fo:DynamicPage id="idDynamicPage" stickySubheaderProvider="CreateProductWizard"
+					class="sapUiNoContentPadding" showFooter="true" headerExpanded="true">
+                    <fo:title>
+                        <fo:DynamicPageTitle>
+							<fo:heading><m:Title text="{userAttriJson>/EMPLOYEE_NAME}" wrapping="true"/></fo:heading>
+                            <fo:expandedContent><m:Label text="Employee ID : {userAttriJson>/EMPLOYEE_ID}" wrapping="true"/></fo:expandedContent>
+                            <fo:snappedContent><m:Label text="Employee ID : {userAttriJson>/EMPLOYEE_ID}" wrapping="true"/></fo:snappedContent>
+                            <fo:snappedTitleOnMobile><m:Title text="Employee ID : {userAttriJson>/EMPLOYEE_ID}" wrapping="true"/></fo:snappedTitleOnMobile>
+                            <fo:actions>
+                                <m:Button text="Create" type="Emphasized" press="onAdd" icon="sap-icon://add"/>
+                                <m:SegmentedButton selectedKey="requests" selectionChange="onSegBtn">
+                                    <m:items>
+                                        <m:SegmentedButtonItem text="Requests" key="requests" />
+                                        <m:SegmentedButtonItem text="Calendar" key="calendar" />
+                                    </m:items>
+                                </m:SegmentedButton>
+                                <m:GenericTag text="General Leave : " status="{path: 'userAttriJson>/GENERAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}" 
+									design="StatusIconHidden" press="onPressOpenGLPopover">
+									<m:ObjectNumber emphasized="true" number="{userAttriJson>/GENERAL_LEAVE_BALANCE}" 
+										state="{path: 'userAttriJson>/GENERAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}"/>
+								</m:GenericTag>
+                                <m:GenericTag text="Casual Leave : " status="{path: 'userAttriJson>/CASUAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}" 
+									design="StatusIconHidden" press="onPressOpenCLPopover">
+									<m:ObjectNumber emphasized="true" number="{userAttriJson>/CASUAL_LEAVE_BALANCE}" 
+										state="{path: 'userAttriJson>/CASUAL_LEAVE_BALANCE', formatter: '.formatter.getStatus'}"/>
+								</m:GenericTag>
+                            </fo:actions>
+						</fo:DynamicPageTitle>
+                    </fo:title>
+
+                    <fo:content>
+                        <m:VBox class="sapUiTinyMargin">
+							<m:MessageStrip text="General Leave balance is 0" type="Information" showIcon="true" showCloseButton="true"  
+								visible="{= ${userAttriJson>/GENERAL_LEAVE_BALANCE} === 0 ? true : false}"/>
+							<m:MessageStrip text="Casual Leave balance is 0" type="Information" showIcon="true"	showCloseButton="true" 
+								class="sapUiTinyMarginTopBottom" visible="{= ${userAttriJson>/CASUAL_LEAVE_BALANCE} === 0 ? true : false}"/>
+
+                            <m:Table  id="idMasterTable" autoPopinMode="true" fixedLayout="true" inset="false" visible="{formModel>/tableForRequester}"
+                                sticky="HeaderToolbar,ColumnHeaders" showSeparators="Inner" growing="true" growingThreshold="50"
+                                items="{ path: 'tableData>/value', sorter: { path: 'START_DATE', descending : true } }" >
+								<m:headerToolbar>
+									<m:OverflowToolbar>
+										<m:content>
+											<m:Title text="Leave Requests" />
+											<m:ToolbarSpacer ></m:ToolbarSpacer>
+											<m:SegmentedButton selectedKey="{formModel>/key}" selectionChange="onSegBtn2" 
+												visible="{= ${userAttriJson>/ROLE} !== 'Requestor' ? true : false}">
+												<m:items>
+													<m:SegmentedButtonItem text="Teams" key="teams" />
+													<m:SegmentedButtonItem text="Self" key="self" />
+												</m:items>
+											</m:SegmentedButton>
+										</m:content>
+									</m:OverflowToolbar>
+								</m:headerToolbar>
+                                <m:columns>
+                                    <m:Column hAlign="Center"><m:Text text="Start Date" wrapping="true"/></m:Column>
+                                    <m:Column hAlign="Center"><m:Text text="End Date" wrapping="true"/></m:Column>
+                                    <m:Column hAlign="Center"><m:Text text="No. of Days" wrapping="true"/></m:Column>
+                                    <m:Column ><m:Text text="Leave Type" wrapping="true"/></m:Column>
+                                    <m:Column ><m:Text text="Leave Status" wrapping="true"/></m:Column>
+                                    <m:Column ><m:Text text="Leave Notes" wrapping="true" /></m:Column>
+                                    <m:Column width="2rem" hAlign="Center"><m:Text text="" wrapping="true"/></m:Column>
+                                </m:columns>
+                                <m:items>
+                                    <m:ColumnListItem>
+                                        <m:cells>
+                                            <m:Text  text="{path:'tableData>START_DATE',formatter:'.formatter.formatDate'}" />
+                                            <m:Text  text="{path:'tableData>END_DATE',formatter:'.formatter.formatDate'}" />
+                                            <m:Text  text="{path:'tableData>NO_OF_LEAVES'}" />
+                                            <m:Text  text="{path:'tableData>LEAVE_TYPE',formatter:'.formatter.formatLeaveType'}" />
+                                            <m:ObjectStatus text="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatus'}"
+                                                state="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusState'}"
+                                                icon="{path:'tableData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusIcon'}"/>
+                                            <m:Text  text="{path:'tableData>LEAVE_NOTES'}" />    
+                                            <core:Icon src="sap-icon://delete" color="red" press="onDelete" 
+                                                visible="{= ${tableData>LEAVE_STATUS} === 1 ? true : false}"/>
+                                        </m:cells>
+                                    </m:ColumnListItem>
+                                </m:items>
+                            </m:Table>
+
+							<m:Table id="idMasterTable2" autoPopinMode="true" fixedLayout="true" inset="false" visible="{formModel>/tableForApprover}"
+                                sticky="HeaderToolbar,ColumnHeaders" showSeparators="Inner" growing="true" growingThreshold="50"
+                                items="{ path: 'TeamsData>/teamsArray'}" >
+								<m:headerToolbar>
+									<m:OverflowToolbar>
+										<m:content>
+											<m:Title text="Teams Requests"/>
+											<m:ToolbarSpacer ></m:ToolbarSpacer>
+											<m:SegmentedButton selectedKey="{formModel>/key}" selectionChange="onSegBtn2"
+												visible="{= ${userAttriJson>/ROLE} !== 'Requestor' ? true : false}">
+												<m:items>
+													<m:SegmentedButtonItem text="Teams" key="teams" />
+													<m:SegmentedButtonItem text="Self" key="self" />
+												</m:items>
+											</m:SegmentedButton>
+										</m:content>
+									</m:OverflowToolbar>
+								</m:headerToolbar>
+                                <m:columns>
+									<m:Column mergeDuplicates="true"><m:Text text="Employee Name" wrapping="true"/></m:Column>
+									<!-- <m:Column hAlign="Center" mergeDuplicates="true"><m:Text text="Start Date" wrapping="true"/></m:Column> -->
+                                    <m:Column hAlign="Center" ><m:Text text="Start Date" wrapping="true"/></m:Column>
+                                    <m:Column hAlign="Center"><m:Text text="End Date" wrapping="true"/></m:Column>
+                                    <m:Column hAlign="Center"><m:Text text="No. of Days" wrapping="true"/></m:Column>
+									<!-- <m:Column ><m:Text text="Projects" wrapping="true"/></m:Column> -->
+                                    <m:Column ><m:Text text="Leave Type" wrapping="true"/></m:Column>
+                                    <m:Column ><m:Text text="Leave Status" wrapping="true"/></m:Column>
+                                    <m:Column ><m:Text text="Leave Notes" wrapping="true" /></m:Column>
+									<!-- <m:Column ><m:Text text="Leave Balance" wrapping="true"/></m:Column> -->
+                                    <m:Column width="5rem" ><m:Text text="Action" /></m:Column>
+                                </m:columns>
+                                <m:items>
+                                    <m:ColumnListItem>
+                                        <m:cells>
+											<m:Link wrapping="true" text="{path:'TeamsData>EMPLOYEE_NAME'}" press="onLink" />
+											<!-- <m:ObjectIdentifier  title="{TeamsData>EMPLOYEE_NAME}" text="Casual Leave: {TeamsData>CASUAL_LEAVE_BALANCE} {i18n>newLine} General Leave: {TeamsData>GENERAL_LEAVE_BALANCE}"/> -->
+                                            <m:Text wrapping="true" text="{path:'TeamsData>START_DATE',formatter:'.formatter.formatDate'}" />
+                                            <m:Text wrapping="true" text="{path:'TeamsData>END_DATE',formatter:'.formatter.formatDate'}" />
+                                            <m:Text wrapping="true" text="{path:'TeamsData>NO_OF_LEAVES'}" />
+											<!-- <m:Text wrapping="true" text="{path:'TeamsData>PROJECT'}" /> -->
+											<!-- <m:Link wrapping="true" text="Projects" press="onProjectLink" /> -->
+                                            <m:Text wrapping="true" text="{path:'TeamsData>LEAVE_TYPE',formatter:'.formatter.formatLeaveType'}" />
+                                            <m:ObjectStatus text="{path:'TeamsData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatus'}" 
+                                                state="{path:'TeamsData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusState'}"
+                                                icon="{path:'TeamsData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatusIcon'}"/>
+                                            <m:Text wrapping="true" text="{path:'TeamsData>LEAVE_NOTES'}" />
+											<!-- <m:Link wrapping="true" text="Leave Balance" press="onLink"/> -->
+											<m:HBox >
+												<core:Icon press="onApprove2" tooltip="Approve" src="sap-icon://complete" color="green" class="sapUiTinyMarginEnd"/>
+												<core:Icon press="onReject2" tooltip="Reject" src="sap-icon://decline" color="red"/>
+											</m:HBox>
+                                        </m:cells>
+                                    </m:ColumnListItem>
+                                </m:items>
+                            </m:Table>
+
+                            <m:SinglePlanningCalendar id="SPC1" class="sapUiSmallTinyTop" title= "My Calendar"
+								appointments="{path: 'appointmentData>/appointments'}" visible="{formModel>/calendarForRequester}"
+								appointmentSelect="singleAppointmentSelect">
+								<m:views>
+									<m:SinglePlanningCalendarMonthView key="MonthView" title="Month" />
+								</m:views>
+								<m:actions>
+									<m:SegmentedButton selectedKey="{formModel>/key1}" selectionChange="onSegBtn3"
+										visible="{= ${userAttriJson>/ROLE} !== 'Requestor' ? true : false}">
+										<m:items>
+											<m:SegmentedButtonItem text="Teams" key="teams" />
+											<m:SegmentedButtonItem text="Self" key="self" />
+										</m:items>
+									</m:SegmentedButton>
+								</m:actions>
+								<m:appointments>
+									<unified:CalendarAppointment
+										title="{path: 'appointmentData>LEAVE_TYPE', formatter: '.formatter.formatLeaveType'}"
+										text= "{appointmentData>LEAVE_NOTES}"
+										type="{path:'appointmentData>LEAVE_STATUS',formatter:'.formatter.formatType'}"
+										startDate="{path:'appointmentData>START_DATE',formatter:'.formatter.formatToDateObject'}"
+										endDate="{path:'appointmentData>END_DATE',formatter:'.formatter.formatToDateObject'}">
+									</unified:CalendarAppointment>
+								</m:appointments>
+							</m:SinglePlanningCalendar>
+
+							<m:PlanningCalendar id="PC" visible="{formModel>/calendarForApprover}"
+								startDate="{path: 'Calender1>/startDate'}" rows="{path: 'Calender1>/Subordinates/EmployeeDetails'}"
+								appointmentsVisualization="Filled" appointmentSelect="handleAppointmentSelect"
+								rowHeaderPress="handleRowHeaderPress" showEmptyIntervalHeaders="false"
+								showWeekNumbers="true">
+								<m:toolbarContent>
+									<m:Title text="Teams Calendar" titleStyle="H4"/>
+									<m:ToolbarSpacer ></m:ToolbarSpacer>
+									<m:SegmentedButton selectedKey="{formModel>/key1}" selectionChange="onSegBtn3"
+										visible="{= ${userAttriJson>/ROLE} !== 'Requestor' ? true : false}">
+										<m:items>
+											<m:SegmentedButtonItem text="Teams" key="teams" />
+											<m:SegmentedButtonItem text="Self" key="self" />
+										</m:items>
+									</m:SegmentedButton>
+								</m:toolbarContent>
+								<m:rows>
+									<m:PlanningCalendarRow title="{Calender1>EMPLOYEE_NAME}" text="{Calender1>DESIGNATION}"
+										appointments="{path : 'Calender1>appointments/LeaveInfo', templateShareable: false}">
+										<m:customData>
+											<core:CustomData key="emp-name" value="{Calender1>EMPLOYEE_NAME}" writeToDom="true"/>
+										</m:customData>
+										<m:appointments>
+											<unified:CalendarAppointment
+												startDate="{path:'Calender1>START_DATE',formatter:'.formatter.formatToDateObject'}"
+												endDate="{path:'Calender1>END_DATE',formatter:'.formatter.formatToDateObject'}"
+												title="{path:'Calender1>LEAVE_TYPE',formatter:'.formatter.formatLeaveType'}"
+												text="{Calender1>LEAVE_NOTES}"
+												type="{path:'Calender1>LEAVE_STATUS',formatter:'.formatter.formatType'}" 
+												description="{Calender1>EMPLOYEE_ID}"
+												key="{Calender1>LEAVE_ID}">
+											</unified:CalendarAppointment>
+										</m:appointments>
+									</m:PlanningCalendarRow>
+								</m:rows>
+							</m:PlanningCalendar>
+                        </m:VBox>
+                    </fo:content>
+                </fo:DynamicPage>
+
+                <layout:sideContent>
+					<m:VBox class="sapUiTinyMargin">
+						<f:SimpleForm id="simpleForm1" editable="true" layout="ResponsiveGridLayout"  
+							singleContainerFullSize="false" >
+							<f:toolbar>
+								<m:Toolbar id="TB1">
+									<m:Title id="Title1" text="Leave Request"/>
+									<m:ToolbarSpacer />
+                                    <m:Button icon="sap-icon://refresh" press="onRefresh" type="Transparent" tooltip="Refresh"/>
+									<m:Button text="Close" type="Transparent" press="onAdd('Close')"/>
+								</m:Toolbar>
+							</f:toolbar>
+							<f:content>
+								<m:Label text="Approver" design="Bold" class="sapUiTinyMarginTop"/>
+								<m:Text text="{userAttriJson>/APPROVER}"/>
+
+								<m:Label text="Select Type of Leave" required="true" design="Bold" />
+								<m:ComboBox id="idCombo" items="{path: 'LeaveTypeData>/value'}" selectionChange="onSelectionChange">
+									<core:Item key="{LeaveTypeData>CODE}" text="{LeaveTypeData>DESCRIPTION}" enabled="{LeaveTypeData>ENABLED}"/>
+								</m:ComboBox>
+
+								<m:Label text="Last Worked Date" required="true" design="Bold" class="sapUiTinyMarginTop" visible="{formModel>/lastDateVisible}"/>
+								<m:DatePicker change="onLDate" value="{'path':'formModel>/lDate', 'type':'sap.ui.model.type.Date', 'formatOptions': {'pattern': 'dd-MM-yyyy'}}" 
+									displayFormat="dd-MM-yyyy" id="idLWDate" visible="{formModel>/lastDateVisible}"/>
+
+								<m:Label text="From Date" required="true" design="Bold" class="sapUiTinyMarginTop"/>
+								<m:DatePicker change="onFDate" value="{'path':'formModel>/fDate', 'type':'sap.ui.model.type.Date', 'formatOptions': {'pattern': 'dd-MM-yyyy'}}" 
+									displayFormat="dd-MM-yyyy" minDate="{formModel>/minDate}" id="idFDate"/>
+
+								<m:Label text="To Date" required="true" design="Bold" class="sapUiTinyMarginTop"/>
+								<m:DatePicker change="onTDate" value="{'path':'formModel>/tDate', 'type':'sap.ui.model.type.Date', 'formatOptions': {'pattern': 'dd-MM-yyyy'}}" 
+									displayFormat="dd-MM-yyyy" minDate="{formModel>/minDate}" id="idTDate"/>
+
+								<m:Label text="No. of Days" required="true" design="Bold" class="sapUiTinyMarginTop"/>
+								<m:Text text="{formModel>/days}"/>
+
+								<m:Label text="Select Half" required="true" design="Bold" visible="{formModel>/halfType}"/>
+								<m:ComboBox id="idHalf" selectionChange="onSelectionChangeOfHalf" visible="{formModel>/halfType}">
+									<core:Item key="First_Half" text="First Half" />
+									<core:Item key="Second_Half" text="Second Half" />
+								</m:ComboBox>
+
+								<m:Label text="Reason" required="true" design="Bold" class="sapUiTinyMarginTop"/>	
+								<m:TextArea rows="4" maxLength="100" id="idReason" value="{formModel>/reason}" liveChange="onReasonChange"
+									placeholder="Write only 100 characters"/>
+								<m:FlexBox alignContent="End" justifyContent="End">
+									<m:Text id="idText" text="100 characters remaining"/>	
+								</m:FlexBox>
+								<m:Button text="Submit" class="sapUiSmallMarginTop" type="Emphasized" press="onPress"/>			
+							</f:content>
+						</f:SimpleForm>
+					</m:VBox>
+				</layout:sideContent>
+            </layout:DynamicSideContent>
+        </m:content>
+    </m:Page>
+</mvc:View>

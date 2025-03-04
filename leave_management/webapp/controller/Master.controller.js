@@ -26,7 +26,7 @@ sap.ui.define([
         formatter: formatter,
 
         onInit() {
-
+            debugger;
             that = this;
             context = this;
             var appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
@@ -559,18 +559,18 @@ sap.ui.define([
 
         getUserAttribute() {
 
-            // var oModel = new JSONModel({
-            //     userId: "farzeen.s@intellectbizware.com",
-            //     userName: "Farzeen Sayyed"
-            // });
+            var oModel = new JSONModel({
+                userId: "farzeen.s@intellectbizware.com",
+                userName: "Farzeen Sayyed"
+            });
             // var oModel = new JSONModel({
             //     userId: "vishal.s@intellectbizware.com",
             //     userName: "Vishal Suryawanshi"
             // });
-            var oModel = new JSONModel({
-                userId: "teju.moolya@gmail.com",
-                userName: "Teju"
-            });
+            // var oModel = new JSONModel({
+            //     userId: "teju.moolya@gmail.com",
+            //     userName: "Teju"
+            // });
             context.getOwnerComponent().setModel(oModel, "userAttriJson");
             context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getData().userId);
 
@@ -613,7 +613,7 @@ sap.ui.define([
                         context.getOwnerComponent().getModel("formModel").setProperty("/tableForApprover", true);
                     }
 
-                    // context.onRead(context.getOwnerComponent().getModel("userAttriJson").getData().EMPLOYEE_ID, msg);
+                    context.onRead(context.getOwnerComponent().getModel("userAttriJson").getData().EMPLOYEE_ID, msg);
 
                     context.getEvents(context.getOwnerComponent().getModel("userAttriJson").getData().EMAIL_ID);
                     context.getLeaveTypes();
