@@ -8,10 +8,10 @@
 			adjustLabelSpan="false" singleContainerFullSize="false">
 			
 			<Label text="From" />
-			<Text text="{path: 'AppointDetail>/startDate', formatter:'.formatter.formatDate'}"/>
+			<Text text="{parts:[{path:'AppointDetail>/startDate'},{path:'AppointDetail>/title'}], formatter:'.formatter.formatDateWithTime'}"/>
 			
 			<Label text="To" />
-			<Text text="{path: 'AppointDetail>/endDate', formatter:'.formatter.formatDate'}"/>
+			<Text text="{parts:[{path:'AppointDetail>/endDate'},{path:'AppointDetail>/title'}], formatter:'.formatter.formatDateWithTime'}"/>
 
 			<Label text="Reason" />
 			<Text text="{AppointDetail>/text}"/>
@@ -23,10 +23,14 @@
 			<Text text="{path: 'AppointDetail>/key'}" visible="false"/>
 		</f:SimpleForm>
 		<beginButton>
-			<Button text="Aprrove" type="Success" press="onApprove2"/>
+			<Button text="Aprrove" type="Accept" press="onApprove2" tooltip="Approve" icon="sap-icon://complete"
+				enabled="{= (${userAttriJson>/ROLE} === 'Approver' &amp;&amp; ${AppointDetail>/LEAVE_STATUS} === 1) || 
+					((${userAttriJson>/ROLE} === 'Manager' &amp;&amp; ${AppointDetail>/LEAVE_STATUS} === 2) || (${AppointDetail>/ROLE} === 'Approver' &amp;&amp; ${AppointDetail>/LEAVE_STATUS} === 1)) ? true : false}"/>
 		</beginButton>
 		<endButton>
-			<Button text="Reject" type="Reject" icon="sap-icon://decline" press="onReject2"/>
+			<Button text="Reject" type="Reject" icon="sap-icon://decline" press="onReject2" tooltip="Reject"
+				enabled="{= ((${userAttriJson>/ROLE} === 'Approver') &amp;&amp; ${AppointDetail>/LEAVE_STATUS} === 1) || 
+					((${userAttriJson>/ROLE} === 'Manager' &amp;&amp; ${AppointDetail>/LEAVE_STATUS} === 2) || (${AppointDetail>/ROLE} === 'Approver' &amp;&amp; ${AppointDetail>/LEAVE_STATUS} === 1)) ? true : false}"/>
 		</endButton>
 	</ResponsivePopover>
 </core:FragmentDefinition>

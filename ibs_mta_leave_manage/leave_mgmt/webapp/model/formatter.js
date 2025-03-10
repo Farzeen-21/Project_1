@@ -8,15 +8,68 @@ sap.ui.define([
 
 		return {
 
-			formatDate: function (oDate) {
-				if (oDate !== "" && oDate !== null && oDate !== undefined) {
-					var DateInstance = new Date(oDate);
-					var date = sap.ui.core.format.DateFormat.getDateInstance({
-						pattern: "dd-MM-yyyy"
-					});
-					return date.format(DateInstance);
+			formatDate: function (oDate, half) {
+				
+				if (half === 'BA' || half === 'CL_HALF_DAY' || half === 'GL_HALF_DAY') {
+					if (oDate !== "" && oDate !== null && oDate !== undefined) {
+						var DateInstance = new Date(oDate);
+						var date = sap.ui.core.format.DateFormat.getDateInstance({
+							pattern: "dd-MM-yyyy hh:mm a"
+						});
+						return date.format(DateInstance);
+					}
+					return "";
 				}
-				return "";
+				else {
+					if (oDate !== "" && oDate !== null && oDate !== undefined) {
+						var DateInstance = new Date(oDate);
+						var date = sap.ui.core.format.DateFormat.getDateInstance({
+							pattern: "dd-MM-yyyy"
+						});
+						return date.format(DateInstance);
+					}
+					return "";
+				}
+			},
+
+			formatDateWithTime: function (oDate, half) {
+				
+				if (half.includes("Birthday Anniversary") || half.includes("CL Half Day") || half.includes("GL Half Day")) {
+					if (oDate !== "" && oDate !== null && oDate !== undefined) {
+						var DateInstance = new Date(oDate);
+						var date = sap.ui.core.format.DateFormat.getDateInstance({
+							pattern: "dd-MM-yyyy hh:mm a"
+						});
+						return date.format(DateInstance);
+					}
+					return "";
+				}
+				else {
+					if (oDate !== "" && oDate !== null && oDate !== undefined) {
+						var DateInstance = new Date(oDate);
+						var date = sap.ui.core.format.DateFormat.getDateInstance({
+							pattern: "dd-MM-yyyy"
+						});
+						return date.format(DateInstance);
+					}
+					return "";
+				}
+			},
+
+			deleteIcon: function (sDate, iStatus) {
+				if (iStatus === 1) {
+					return true;
+				} else if (iStatus === 4 || iStatus === 5) {
+					return false;
+				} else if (iStatus === 2 || iStatus === 3) {
+					//'2025-03-25T03:30:00.000Z'
+					//Tue Mar 25 2025 09:00:00 GMT+0530 (India Standard Time)
+					var oDate = new Date(sDate);
+					var currentDate = new Date();
+					if ((oDate>currentDate || oDate<currentDate) && oDate!=currentDate) {
+						return true;
+					}
+				}
 			},
 
 			formatToDateObject: function (oDate) {
@@ -94,11 +147,11 @@ sap.ui.define([
 			},
 
 			formatType: function (iStatus) {
-				if (iStatus == 1) {
+				if (iStatus === 1) {
 					return CalendarDayType.Type01;
-				} else if (iStatus == 2 || iStatus == 3) {
+				} else if (iStatus === 2 || iStatus === 3) {
 					return CalendarDayType.Type08;
-				} else if (iStatus == 4 || iStatus == 5) {
+				} else if (iStatus === 4 || iStatus === 5) {
 					return CalendarDayType.Type02;
 				}
 			}

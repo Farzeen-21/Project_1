@@ -4,11 +4,14 @@
 		<VBox class="sapUiSmallMarginTop">
 			<Label text="Do you want to reject this request?" design="Bold" required="true" 
                 class="sapUiSmallMarginBegin"/>
-			<TextArea class="sapUiSmallMarginBegin" id="idRejComment" width="32rem" value="" rows="3" 
-                maxLength="1000" showExceededText="true" required="true" liveChange="handleTextReject"/>
+			<TextArea class="sapUiSmallMarginBegin" id="idRejComment" width="95%" value="" rows="3" 
+                maxLength="200" required="true" liveChange="handleTextReject"/>
+			<FlexBox alignContent="End" justifyContent="End" class="sapUiTinyMarginEnd">
+				<Text id="idText3" text="200 characters remaining"/>	
+			</FlexBox>
 		</VBox>
 		<buttons>
-			<Button icon="sap-icon://decline" text="Reject" type="Emphasized" id="idButReject" enabled="false"
+			<Button icon="sap-icon://decline" text="Reject" type="Reject" id="idButReject" enabled="false"
 				press="onRejectApproval"></Button>
 			<Button icon="sap-icon://cancel" text="Cancel" press="RejectClose"/>
 		</buttons>

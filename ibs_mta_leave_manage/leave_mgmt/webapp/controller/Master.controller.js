@@ -24,6 +24,7 @@ sap.ui.define([
     var rowObj;
     var approveObj;
     var rejectObj;
+    var global = 0;
     var DialogType = mobileLibrary.DialogType;
     var ButtonType = mobileLibrary.ButtonType;
 
@@ -58,7 +59,8 @@ sap.ui.define([
                 calendarForApprover: false,
                 halfType: false,
                 key: "teams",
-                key1: "teams"
+                key1: "teams",
+                mainKey: "calendar"
             });
             context.getOwnerComponent().setModel(oModel, "formModel");
             BusyIndicator.show(0);
@@ -101,18 +103,16 @@ sap.ui.define([
             }
         },
 
-        handleRowHeaderPress: function (oEvent) {
-
-            MessageBox.show("rowHeaderPressed on row: " + oEvent.getParameter("row").getId());
-        },
-
         onAdd: function (sValue) {
-
             var dynamicSideContentState = this.getView().byId("idDynamicSideContent").getShowSideContent();
             if (dynamicSideContentState === true) {
                 this.getView().byId("idDynamicSideContent").setShowSideContent(false);
                 this.getView().byId("idDynamicSideContent").setShowMainContent(true);
-                this.byId("PC").setBuiltInViews(['OneMonth']);
+                if (Device.system.phone === true || Device.system.tablet === true) {
+                    this.byId("PC").setBuiltInViews(['Week']);
+                } else {
+                    this.byId("PC").setBuiltInViews(['OneMonth']);
+                }
             } else {
                 this.getView().byId("idDynamicSideContent").setShowSideContent(true);
                 this.byId("PC").setBuiltInViews(['Week']);
@@ -121,9 +121,7 @@ sap.ui.define([
                 }
             }
 
-            // if (sValue === 'Close') {
             this.onRefresh();
-            // }
         },
 
         onSelectionChange: function (oEvent) {
@@ -135,21 +133,28 @@ sap.ui.define([
             context.getOwnerComponent().getModel("formModel").setProperty("/tDate", "");
             context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
             context.getOwnerComponent().getModel("formModel").setProperty("/reason", "");
-            context.getView().byId("idText").setText("100 characters remaining");
+            context.getView().byId("idHalf").setValue("");
+            context.getView().byId("idText").setText("200 characters remaining");
 
             context.getView().byId("idCombo").setValueState("None");
             context.getView().byId("idLWDate").setValueState("None");
             context.getView().byId("idFDate").setValueState("None");
             context.getView().byId("idTDate").setValueState("None");
             context.getView().byId("idReason").setValueState("None");
-            context.getView().byId("idHalf").setValue("");
+            context.getView().byId("idHalf").setValueState("None");
 
             if (sKey === 'BA' || sKey === 'CL_HALF_DAY' || sKey === 'GL_HALF_DAY') {
                 context.getOwnerComponent().getModel("formModel").setProperty("/halfType", true);
-                context.getView().byId("idTDate").setEditable(false);
+                context.getView().byId("idTDate").setEnabled(false);
             } else {
                 context.getOwnerComponent().getModel("formModel").setProperty("/halfType", false);
-                context.getView().byId("idTDate").setEditable(true);
+                context.getView().byId("idTDate").setEnabled(true);
+            }
+
+            if (sKey === 'CL' || sKey === 'CL_HALF_DAY' || sKey === 'BA' || sKey === 'GL_HALF_DAY' || sKey === 'LWP' || sKey === 'ML') {
+                context.getView().byId("idTDate").setEnabled(false);
+            } else {
+                context.getView().byId("idTDate").setEnabled(true);
             }
 
             if (sKey === 'CO') {
@@ -178,7 +183,7 @@ sap.ui.define([
             context.getView().byId("idHalf").setValue("");
 
             context.getOwnerComponent().getModel("formModel").setProperty("/halfType", false);
-            context.getView().byId("idTDate").setEditable(true);
+            context.getView().byId("idTDate").setEnabled(true);
             context.getOwnerComponent().getModel("formModel").setProperty("/lastDateVisible", false);
 
             context.getOwnerComponent().getModel("formModel").refresh(true);
@@ -192,6 +197,13 @@ sap.ui.define([
             var sKey = oEvent.getSource().getSelectedKey();
             var fromDate = context.getOwnerComponent().getModel("formModel").getProperty("/fDate");
             var toDate = context.getOwnerComponent().getModel("formModel").getProperty("/tDate");
+            if (fromDate === "" || fromDate === null) {
+                context.getView().byId("idHalf").setValue("");
+                context.getView().byId("idHalf").setSelectedKey("");
+                context.getView().byId("idHalf").setValueState("Error").setValueStateText("Select From Date first");
+                context.getView().byId("idFDate").setValueState("Error").setValueStateText("Select From Date");
+                return;
+            }
             if (sKey === 'First_Half') {
                 fromDate.setHours("9");
                 fromDate.setMinutes("00");
@@ -209,6 +221,8 @@ sap.ui.define([
             }
             context.getOwnerComponent().getModel("formModel").setProperty("/fDate", fromDate);
             context.getOwnerComponent().getModel("formModel").setProperty("/tDate", toDate);
+
+            context.getView().byId("idHalf").setValueState("None");
         },
 
         onReasonChange: function (oEvent) {
@@ -216,11 +230,36 @@ sap.ui.define([
             context.getOwnerComponent().getModel("formModel").setProperty("/reason", sValue);
             if (sValue !== "") {
                 var length = sValue.length;
-                length = 100 - length;
+                length = 200 - length;
                 context.getView().byId("idText").setText(length + " characters remaining");
                 context.getView().byId("idReason").setValueState("None");
             } else {
-                context.getView().byId("idText").setText("100 characters remaining");
+                context.getView().byId("idText").setText("200 characters remaining");
+            }
+        },
+
+        
+        handleLiveChange: function (oEvent) {
+            var sValue = oEvent.getParameter("value");
+            if (sValue !== "") {
+                var length = sValue.length;
+                length = 200 - length;
+                sap.ui.getCore().byId("idText2").setText(length + " characters remaining");
+                sap.ui.getCore().byId("idAppComment").setValueState("None");
+            } else {
+                sap.ui.getCore().byId("idText2").setText("200 characters remaining");
+            }
+        },
+
+        handleTextReject: function (oEvent) {
+            var sValue = oEvent.getParameter("value");
+            if (sValue !== "") {
+                var length = sValue.length;
+                length = 200 - length;
+                sap.ui.getCore().byId("idText3").setText(length + " characters remaining");
+                sap.ui.getCore().byId("idRejComment").setValueState("None");
+            } else {
+                sap.ui.getCore().byId("idText3").setText("200 characters remaining");
             }
         },
 
@@ -248,7 +287,7 @@ sap.ui.define([
                 context.getView().byId("idReason").setValue("Compensatory Date:- " + sDate + "\n" + "Note: ");
 
                 var length = context.getView().byId("idReason").getValue().length;
-                length = 100 - length;
+                length = 200 - length;
                 context.getView().byId("idText").setText(length + " characters remaining");
             }
         },
@@ -330,6 +369,13 @@ sap.ui.define([
             } else {
                 context.getOwnerComponent().getModel("formModel").setProperty("/days", 1);
             }
+
+            if (this.byId("idCombo").getSelectedKey() === 'LWP' || this.byId("idCombo").getSelectedKey() === 'WFH') {
+                context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
+            }
+
+            context.getView().byId("idHalf").setValueState("None");
+            context.getView().byId("idHalf").setValue("");
         },
 
         onTDate: function (oEvent) {
@@ -400,6 +446,10 @@ sap.ui.define([
                 oEvent.getSource().setValueState("Error").setValueStateText("Select From Date first");
                 context.getOwnerComponent().getModel("formModel").setProperty("/tDate", "");
             }
+
+            if (sKey === 'WFH') {
+                context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
+            }
         },
 
         onPress: function () {
@@ -409,6 +459,7 @@ sap.ui.define([
             var tDate = context.getOwnerComponent().getModel("formModel").getProperty("/tDate");
             var sdays = context.getOwnerComponent().getModel("formModel").getProperty("/days");
             var sreason = context.getOwnerComponent().getModel("formModel").getProperty("/reason");
+            var half = context.getView().byId("idHalf").getValue();
             if (sLeaveType === "" || sLeaveType === null) {
                 context.getView().byId("idCombo").setValueState("Error").setValueStateText("Please select Leave Type");
             }
@@ -421,65 +472,189 @@ sap.ui.define([
             if (sreason === "" || sreason === null) {
                 context.getView().byId("idReason").setValueState("Error").setValueStateText("Please write reason");
             }
-
-            if (sLeaveType !== "" && sfDate !== "" && tDate !== "" && sreason !== "") {
-                MessageBox.confirm("Do you want to submit the leave request?", {
-                    actions: [MessageBox.Action.YES, MessageBox.Action.NO],
-                    emphasizedAction: MessageBox.Action.YES,
-                    onClose: function (oAction, oEvent) {
-                        if (oAction === "YES") {
-
-                            var path = appModulePath + "/odata/v4/team-leave-planner/TeamLeaveAction";
-                            var fromDate = context.getOwnerComponent().getModel("formModel").getProperty("/fDate");
-                            // fromDate = fromDate.toISOString().split(".")[0];
-                            var toDate = context.getOwnerComponent().getModel("formModel").getProperty("/tDate");
-                            // toDate = toDate.toISOString().split(".")[0];
-
-                            var obj = {
-                                "sAction": "CREATE",
-                                "aLeaveRequestInfo": [{
-                                    "LEAVE_ID": 1,//hardcode
-                                    "EMPLOYEE_ID": context.getOwnerComponent().getModel("userAttriJson").getData().EMPLOYEE_ID,
-                                    "LEAVE_TYPE": context.getOwnerComponent().getModel("formModel").getProperty("/leaveType"),
-                                    "NO_OF_LEAVES": context.getOwnerComponent().getModel("formModel").getProperty("/days"),
-                                    "START_DATE": fromDate.toISOString(),
-                                    "END_DATE": toDate.toISOString(),
-                                    "LEAVE_STATUS": 1,
-                                    "LEAVE_NOTES": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
-                                    "IS_DELETED": null
-                                }],
-                                "aLeaveEventLog": [{
-                                    "LEAVE_ID": 1,//hardcode
-                                    "EVENT_NO": 1,//hardcode
-                                    "EVENT_CODE": "CR",
-                                    "USER_ID": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"),
-                                    "USER_NAME": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMPLOYEE_NAME"),
-                                    "REMARK": "Leave Request Created",//hardcode
-                                    "COMMENT": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
-                                    "CREATED_ON": new Date()
-                                }]
-                            };
-
-                            var data = JSON.stringify(obj);
-                            BusyIndicator.show(0);
-                            $.ajax({
-                                url: path,
-                                type: 'POST',
-                                data: data,
-                                contentType: 'application/json',
-                                success: function (oData, response) {
-                                    var msg = oData.value;
-                                    context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
-                                    context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"), msg);
-                                },
-                                error: function (oError) {
-                                    context.reuseError(oError);
-                                }
-                            });
-                        }
-                    }
-                });
+            if (half === "" || half === null) {
+                context.getView().byId("idHalf").setValueState("Error").setValueStateText("Please select Half");
             }
+
+            if (sLeaveType === 'BA' || sLeaveType === 'CL_HALF_DAY' || sLeaveType === 'GL_HALF_DAY') {
+                if (sLeaveType !== "" && sfDate !== "" && tDate !== "" && sreason !== "" && half !== "") {
+                    MessageBox.confirm("Do you want to submit the leave request?", {
+                        actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+                        emphasizedAction: MessageBox.Action.YES,
+                        onClose: function (oAction, oEvent) {
+                            if (oAction === "YES") {
+    
+                                var path = appModulePath + "/odata/v4/team-leave-planner/TeamLeaveAction";
+                                var fromDate = context.getOwnerComponent().getModel("formModel").getProperty("/fDate");
+                                // fromDate = fromDate.toISOString().split(".")[0];
+                                var toDate = context.getOwnerComponent().getModel("formModel").getProperty("/tDate");
+                                // toDate = toDate.toISOString().split(".")[0];
+    
+                                var obj = {
+                                    "sAction": "CREATE",
+                                    "aLeaveRequestInfo": [{
+                                        "LEAVE_ID": 1,//hardcode
+                                        "EMPLOYEE_ID": context.getOwnerComponent().getModel("userAttriJson").getData().EMPLOYEE_ID,
+                                        "LEAVE_TYPE": context.getOwnerComponent().getModel("formModel").getProperty("/leaveType"),
+                                        "NO_OF_LEAVES": context.getOwnerComponent().getModel("formModel").getProperty("/days"),
+                                        "START_DATE": fromDate.toISOString(),
+                                        "END_DATE": toDate.toISOString(),
+                                        "LEAVE_STATUS": 1,
+                                        "LEAVE_NOTES": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
+                                        "IS_DELETED": null
+                                    }],
+                                    "aLeaveEventLog": [{
+                                        "LEAVE_ID": 1,//hardcode
+                                        "EVENT_NO": 1,//hardcode
+                                        "EVENT_CODE": "CR",
+                                        "USER_ID": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"),
+                                        "USER_NAME": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMPLOYEE_NAME"),
+                                        "REMARK": "Leave Request Created",//hardcode
+                                        "COMMENT": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
+                                        "CREATED_ON": new Date()
+                                    }]
+                                };
+    
+                                var data = JSON.stringify(obj);
+                                BusyIndicator.show(0);
+                                $.ajax({
+                                    url: path,
+                                    type: 'POST',
+                                    data: data,
+                                    contentType: 'application/json',
+                                    success: function (oData, response) {
+                                        var msg = oData.value;
+                                        context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
+                                        context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"), msg);
+                                    },
+                                    error: function (oError) {
+                                        context.reuseError(oError);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+            else {
+                if (sLeaveType !== "" && sfDate !== "" && tDate !== "" && sreason !== "") {
+                    MessageBox.confirm("Do you want to submit the leave request?", {
+                        actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+                        emphasizedAction: MessageBox.Action.YES,
+                        onClose: function (oAction, oEvent) {
+                            if (oAction === "YES") {
+    
+                                var path = appModulePath + "/odata/v4/team-leave-planner/TeamLeaveAction";
+                                var fromDate = context.getOwnerComponent().getModel("formModel").getProperty("/fDate");
+                                // fromDate = fromDate.toISOString().split(".")[0];
+                                var toDate = context.getOwnerComponent().getModel("formModel").getProperty("/tDate");
+                                // toDate = toDate.toISOString().split(".")[0];
+    
+                                var obj = {
+                                    "sAction": "CREATE",
+                                    "aLeaveRequestInfo": [{
+                                        "LEAVE_ID": 1,//hardcode
+                                        "EMPLOYEE_ID": context.getOwnerComponent().getModel("userAttriJson").getData().EMPLOYEE_ID,
+                                        "LEAVE_TYPE": context.getOwnerComponent().getModel("formModel").getProperty("/leaveType"),
+                                        "NO_OF_LEAVES": context.getOwnerComponent().getModel("formModel").getProperty("/days"),
+                                        "START_DATE": fromDate.toISOString(),
+                                        "END_DATE": toDate.toISOString(),
+                                        "LEAVE_STATUS": 1,
+                                        "LEAVE_NOTES": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
+                                        "IS_DELETED": null
+                                    }],
+                                    "aLeaveEventLog": [{
+                                        "LEAVE_ID": 1,//hardcode
+                                        "EVENT_NO": 1,//hardcode
+                                        "EVENT_CODE": "CR",
+                                        "USER_ID": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"),
+                                        "USER_NAME": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMPLOYEE_NAME"),
+                                        "REMARK": "Leave Request Created",//hardcode
+                                        "COMMENT": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
+                                        "CREATED_ON": new Date()
+                                    }]
+                                };
+    
+                                var data = JSON.stringify(obj);
+                                BusyIndicator.show(0);
+                                $.ajax({
+                                    url: path,
+                                    type: 'POST',
+                                    data: data,
+                                    contentType: 'application/json',
+                                    success: function (oData, response) {
+                                        var msg = oData.value;
+                                        context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
+                                        context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"), msg);
+                                    },
+                                    error: function (oError) {
+                                        context.reuseError(oError);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+
+            // if (sLeaveType !== "" && sfDate !== "" && tDate !== "" && sreason !== "") {
+            //     MessageBox.confirm("Do you want to submit the leave request?", {
+            //         actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+            //         emphasizedAction: MessageBox.Action.YES,
+            //         onClose: function (oAction, oEvent) {
+            //             if (oAction === "YES") {
+
+            //                 var path = appModulePath + "/odata/v4/team-leave-planner/TeamLeaveAction";
+            //                 var fromDate = context.getOwnerComponent().getModel("formModel").getProperty("/fDate");
+            //                 // fromDate = fromDate.toISOString().split(".")[0];
+            //                 var toDate = context.getOwnerComponent().getModel("formModel").getProperty("/tDate");
+            //                 // toDate = toDate.toISOString().split(".")[0];
+
+            //                 var obj = {
+            //                     "sAction": "CREATE",
+            //                     "aLeaveRequestInfo": [{
+            //                         "LEAVE_ID": 1,//hardcode
+            //                         "EMPLOYEE_ID": context.getOwnerComponent().getModel("userAttriJson").getData().EMPLOYEE_ID,
+            //                         "LEAVE_TYPE": context.getOwnerComponent().getModel("formModel").getProperty("/leaveType"),
+            //                         "NO_OF_LEAVES": context.getOwnerComponent().getModel("formModel").getProperty("/days"),
+            //                         "START_DATE": fromDate.toISOString(),
+            //                         "END_DATE": toDate.toISOString(),
+            //                         "LEAVE_STATUS": 1,
+            //                         "LEAVE_NOTES": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
+            //                         "IS_DELETED": null
+            //                     }],
+            //                     "aLeaveEventLog": [{
+            //                         "LEAVE_ID": 1,//hardcode
+            //                         "EVENT_NO": 1,//hardcode
+            //                         "EVENT_CODE": "CR",
+            //                         "USER_ID": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"),
+            //                         "USER_NAME": context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMPLOYEE_NAME"),
+            //                         "REMARK": "Leave Request Created",//hardcode
+            //                         "COMMENT": context.getOwnerComponent().getModel("formModel").getProperty("/reason"),
+            //                         "CREATED_ON": new Date()
+            //                     }]
+            //                 };
+
+            //                 var data = JSON.stringify(obj);
+            //                 BusyIndicator.show(0);
+            //                 $.ajax({
+            //                     url: path,
+            //                     type: 'POST',
+            //                     data: data,
+            //                     contentType: 'application/json',
+            //                     success: function (oData, response) {
+            //                         var msg = oData.value;
+            //                         context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
+            //                         context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getProperty("/EMAIL_ID"), msg);
+            //                     },
+            //                     error: function (oError) {
+            //                         context.reuseError(oError);
+            //                     }
+            //                 });
+            //             }
+            //         }
+            //     });
+            // }
         },
 
         onDelete: function (oEvent) {
@@ -574,9 +749,26 @@ sap.ui.define([
                 oView = this.getView();
 
             var obj = oAppointment.mProperties;
+            var status = obj.title.split(" - ")[1].split(" (")[0];
+            if (status === 'Pending') {
+                status = 1;
+            } else if (status === 'Approved by Lead') {
+                status = 2;
+            } else if (status === 'Approved by Manager') {
+                status = 3;
+            } else if (status === 'Rejected by Lead') {
+                status = 4;
+            } else if (status === 'Rejected by Manager') {
+                status = 5;
+            }
+            obj.LEAVE_STATUS = status;
+
+            var role = obj.title.split("(")[1].split(")")[0];
+            obj.ROLE = role;
+
             var oModel5 = new JSONModel();
             oModel5.setData(obj);
-            oView.setModel(oModel5, "AppointDetail")
+            oView.setModel(oModel5, "AppointDetail");
 
             if (oAppointment === undefined) {
                 return;
@@ -689,6 +881,10 @@ sap.ui.define([
             //     userId: "vishal.s@intellectbizware.com",
             //     userName: "Vishal Suryawanshi"
             // });
+            //   var oModel = new JSONModel({
+            //     userId: "vaishali.c@intellectbizware.com",
+            //     userName: "Vaishali Chikane"
+            // });
             // var oModel = new JSONModel({
             //     userId: "bhavesh.a@intellectbizware.com",
             //     userName: "Bhavesh"
@@ -697,6 +893,7 @@ sap.ui.define([
             //     userId: "chandan.m@intellectbizware.com",
             //     userName: "Chandan"
             // });
+
             var oModel = new JSONModel({
                 userId: "teju.moolya@gmail.com",
                 userName: "Intellect@123"
@@ -751,14 +948,28 @@ sap.ui.define([
 
                     var empID = context.getOwnerComponent().getModel("userAttriJson").getData().EMPLOYEE_ID;
                     var role = context.getOwnerComponent().getModel("userAttriJson").getData().ROLE;
-                    if (context.getOwnerComponent().getModel("userAttriJson").getProperty("/ROLE") === 'Requestor') {
-                        context.onRead(empID, msg);
-                        context.getOwnerComponent().getModel("formModel").setProperty("/tableForRequester", true);
-                        context.getOwnerComponent().getModel("formModel").setProperty("/tableForApprover", false);
+
+                    
+                    if (global === 0) {
+                        global = 1;
+                        if (context.getOwnerComponent().getModel("userAttriJson").getProperty("/ROLE") === 'Requestor') {
+                            context.onRead(empID, msg);
+                            context.getOwnerComponent().getModel("formModel").setProperty("/calendarForRequester", true);
+                            // context.getOwnerComponent().getModel("formModel").setProperty("/tableForApprover", false);
+                        } else {
+                            context.getTeamDetails(empID, role, msg);
+                            // context.getOwnerComponent().getModel("formModel").setProperty("/tableForRequester", false);
+                            // context.getOwnerComponent().getModel("formModel").setProperty("/tableForApprover", true);
+                          
+                            context.getOwnerComponent().getModel("formModel").setProperty("/calendarForApprover", true);
+                            context.getOwnerComponent().getModel("formModel").setProperty("/key1", "teams");
+                        }
                     } else {
-                        context.getTeamDetails(empID, role);
-                        context.getOwnerComponent().getModel("formModel").setProperty("/tableForRequester", false);
-                        context.getOwnerComponent().getModel("formModel").setProperty("/tableForApprover", true);
+                        if (context.getOwnerComponent().getModel("userAttriJson").getProperty("/ROLE") === 'Requestor') {
+                            context.onRead(empID, msg);
+                        } else {
+                            context.getTeamDetails(empID, role, msg);
+                        }
                     }
 
                     context.getEvents(context.getOwnerComponent().getModel("userAttriJson").getData().EMAIL_ID);
@@ -785,21 +996,6 @@ sap.ui.define([
                             }
                         });
                     }
-
-                    if (msg !== undefined) {
-
-                        MessageBox.success(msg, {
-                            actions: [MessageBox.Action.OK],
-                            onClose: function (oAction) {
-                                if (oAction === "OK") {
-
-                                    context.getView().byId("idDynamicSideContent").setShowSideContent(false);
-                                    context.getView().byId("idDynamicSideContent").setShowMainContent(true);
-
-                                }
-                            }
-                        });
-                    }
                     BusyIndicator.hide(0);
                 },
                 error: function (oError) {
@@ -808,7 +1004,7 @@ sap.ui.define([
             });
         },
 
-        getTeamDetails: function (empID, role) {
+        getTeamDetails: function (empID, role, msg) {
             var path = appModulePath + "/odata/v4/team-leave-planner/getEmployeeLeaveData(vEmployeeId=" + empID + ",sRole='" + role + "')";
             $.ajax({
                 url: path,
@@ -827,6 +1023,14 @@ sap.ui.define([
                                 oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].GENERAL_LEAVE_BALANCE = oData.value[0].Subordinates.EmployeeDetails[i].GENERAL_LEAVE_BALANCE;
                                 oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].EmployeeProjectDetail = oData.value[0].Subordinates.EmployeeDetails[i].EmployeeProjectDetail;
                                 oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].ROLE = oData.value[0].Subordinates.EmployeeDetails[i].ROLE;
+                                var dateTimeString = oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].START_DATE;
+                                if (!dateTimeString.endsWith("Z")) {
+                                    oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].START_DATE = dateTimeString + "Z";
+                                }
+                                var dateTimeString2 = oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].END_DATE;
+                                if (!dateTimeString2.endsWith("Z")) {
+                                    oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].END_DATE = dateTimeString + "Z";
+                                }
                                 oArray.push(oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j]);
                             }
                         }
@@ -834,7 +1038,16 @@ sap.ui.define([
                     var oModel = new JSONModel({ teamsArray: oArray });
                     context.getOwnerComponent().setModel(oModel, "TeamsData");
 
-                    var oModel54 = new JSONModel({ value: oData.value[0].LeaveRequests.LeaveInfo });
+                    var leaveData = oData.value[0].LeaveRequests.LeaveInfo;
+                    leaveData.forEach(function (leave) {
+                        if (!leave.START_DATE.endsWith("Z")) {
+                            leave.START_DATE += "Z";
+                        }
+                        if (!leave.END_DATE.endsWith("Z")) {
+                            leave.END_DATE += "Z";
+                        }
+                    });
+                    var oModel54 = new JSONModel({ value: leaveData });
                     context.getOwnerComponent().setModel(oModel54, "tableData");
 
                     var a = new Date();
@@ -843,10 +1056,9 @@ sap.ui.define([
                     var year = a.getFullYear();
                     var hour = a.getHours();
                     var minute = a.getMinutes();
-                    // oData.value[0].startDate = new Date();
-                    // oData.value[0].startDate = sap.ui.core.date.UI5Date.getInstance(year, month, date, hour, minute);
 
-                    context.getView().byId("PC").setStartDate(new Date())
+                    
+                    context.getView().byId("PC").setStartDate(new Date());
                     var oModel11 = new JSONModel(oData.value[0]);
                     context.getOwnerComponent().setModel(oModel11, "Calender1");
 
@@ -859,6 +1071,43 @@ sap.ui.define([
                     var oModel2 = new JSONModel();
                     oModel2.setData({ appointments: oData.value[0].LeaveRequests.LeaveInfo });
                     context.getOwnerComponent().setModel(oModel2, "appointmentData");
+
+                    if (msg !== undefined) {
+
+                        context.getOwnerComponent().getModel("formModel").setProperty("/leaveType", "");
+                        context.getOwnerComponent().getModel("formModel").setProperty("/lDate", "");
+                        context.getOwnerComponent().getModel("formModel").setProperty("/fDate", "");
+                        context.getOwnerComponent().getModel("formModel").setProperty("/tDate", "");
+                        context.getOwnerComponent().getModel("formModel").setProperty("/days", 0);
+                        context.getOwnerComponent().getModel("formModel").setProperty("/reason", "");
+
+                        context.getView().byId("idCombo").setValueState("None");
+                        context.getView().byId("idLWDate").setValueState("None");
+                        context.getView().byId("idFDate").setValueState("None");
+                        context.getView().byId("idTDate").setValueState("None");
+                        context.getView().byId("idReason").setValueState("None");
+                        context.getView().byId("idHalf").setValue("");
+
+                        context.getOwnerComponent().getModel("formModel").setProperty("/halfType", false);
+                        context.getOwnerComponent().getModel("formModel").setProperty("/lastDateVisible", false);
+
+                        context.getOwnerComponent().getModel("formModel").refresh(true);
+                        context.getView().byId("idCombo").setSelectedKey("");
+                        context.getView().byId("idCombo").setValue("");
+                        context.getView().byId("idHalf").setValue("");
+
+                        context.getView().byId("idDynamicSideContent").setShowSideContent(false);
+                        context.getView().byId("idDynamicSideContent").setShowMainContent(true);
+
+                        MessageBox.success(msg, {
+                            actions: [MessageBox.Action.OK],
+                            onClose: function (oAction) {
+                                if (oAction === "OK") {
+                                 
+                                }
+                            }
+                        });
+                    }
                     BusyIndicator.hide(0);
                 },
                 error: function (oError) {
@@ -866,196 +1115,6 @@ sap.ui.define([
                 }
             });
         },
-
-        // getTeamDetails: function () {
-
-        //     var a = new Date();
-        //     var date = a.getDate();
-        //     var month = a.getMonth() + 1;
-        //     var year = a.getFullYear();
-        //     var hour = a.getHours();
-        //     var minute = a.getMinutes();
-        //     var obj = {
-        //         "startDate": UI5Date.getInstance(year, month, date, hour, minute),
-        //         "CASUAL_LEAVE_BALANCE": "8",
-        //         "DESIGNATION": "Lead Consultant",
-        //         "EMAIL_ID": "teju.moolya@gmail.com",
-        //         "EMPLOYEE_ID": 119,
-        //         "EMPLOYEE_NAME": "Teju Moolya",
-        //         "GENERAL_LEAVE_BALANCE": "10",
-        //         "MOBILE_NO": "45454545454",
-        //         "PROJECT": "SAP",
-        //         "REPORTING_LEAD": null,
-        //         "REPORTING_MANAGER": "Swaroop Nagavarapu",
-        //         "LeaveRequests": [
-        //             {
-        //                 "EMPLOYEE_ID": 119,
-        //                 "END_DATE": "2025-01-15T18:29:00Z",
-        //                 "IS_DELETED": null,
-        //                 "LEAVE_ID": 100201,
-        //                 "LEAVE_NOTES": "test",
-        //                 "LEAVE_STATUS": 1,
-        //                 "LEAVE_TYPE": "CL",
-        //                 "NO_OF_LEAVES": "1",
-        //                 "START_DATE": "2025-01-14T18:30:00Z"
-        //             },
-        //             {
-        //                 "EMPLOYEE_ID": 119,
-        //                 "END_DATE": "2025-01-16T18:29:00Z",
-        //                 "IS_DELETED": null,
-        //                 "LEAVE_ID": 100202,
-        //                 "LEAVE_NOTES": "test",
-        //                 "LEAVE_STATUS": 1,
-        //                 "LEAVE_TYPE": "CL",
-        //                 "NO_OF_LEAVES": "1",
-        //                 "START_DATE": "2025-01-18T18:30:00Z"
-        //             }
-        //         ],
-        //         "Subordinates": [
-        //             {
-        //                 "CASUAL_LEAVE_BALANCE": "8",
-        //                 "DESIGNATION": "Consultant",
-        //                 "EMAIL_ID": "farzeen.s@intellectbizware.com",
-        //                 "EMPLOYEE_ID": 5028,
-        //                 "EMPLOYEE_NAME": "Farzeen Sayyed",
-        //                 "GENERAL_LEAVE_BALANCE": "20",
-        //                 "MOBILE_NO": "56555665765",
-        //                 "PROJECT": "iVen",
-        //                 "REPORTING_LEAD": "Teju Moolya",
-        //                 "REPORTING_MANAGER": "Swaroop Nagavarapu",
-        //                 "appointments": [
-        //                     {
-        //                         "EMPLOYEE_ID": 5028,
-        //                         "END_DATE": "2025-01-07T18:29:00Z",
-        //                         "IS_DELETED": null,
-        //                         "LEAVE_ID": 100182,
-        //                         "LEAVE_NOTES": "test",
-        //                         "LEAVE_STATUS": 1,
-        //                         "LEAVE_TYPE": "CL",
-        //                         "NO_OF_LEAVES": "1",
-        //                         "START_DATE": "2025-01-06T18:30:00Z",
-        //                         "EMAIL_ID": "farzeen.s@intellectbizware.com",
-        //                         "EMPLOYEE_NAME": "Farzeen Sayyed",
-        //                         "PROJECT": "iVen",
-        //                         "CASUAL_LEAVE_BALANCE": "8",
-        //                         "GENERAL_LEAVE_BALANCE": "20"
-        //                     },
-        //                     {
-        //                         "EMPLOYEE_ID": 5028,
-        //                         "END_DATE": "2025-01-13T18:29:00Z",
-        //                         "IS_DELETED": null,
-        //                         "LEAVE_ID": 100184,
-        //                         "LEAVE_NOTES": "test",
-        //                         "LEAVE_STATUS": 1,
-        //                         "LEAVE_TYPE": "GL",
-        //                         "NO_OF_LEAVES": "1",
-        //                         "START_DATE": "2025-01-12T18:30:00Z",
-        //                         "EMAIL_ID": "farzeen.s@intellectbizware.com",
-        //                         "EMPLOYEE_NAME": "Farzeen Sayyed",
-        //                         "PROJECT": "iVen",
-        //                         "CASUAL_LEAVE_BALANCE": "8",
-        //                         "GENERAL_LEAVE_BALANCE": "20"
-        //                     },
-        //                     {
-        //                         "EMPLOYEE_ID": 5028,
-        //                         "END_DATE": "2025-02-06T08:29:00Z",
-        //                         "IS_DELETED": null,
-        //                         "LEAVE_ID": 100205,
-        //                         "LEAVE_NOTES": "test",
-        //                         "LEAVE_STATUS": 1,
-        //                         "LEAVE_TYPE": "CL_HALF_DAY",
-        //                         "NO_OF_LEAVES": "0.5",
-        //                         "START_DATE": "2025-02-06T03:30:00Z",
-        //                         "EMAIL_ID": "farzeen.s@intellectbizware.com",
-        //                         "EMPLOYEE_NAME": "Farzeen Sayyed",
-        //                         "PROJECT": "iVen",
-        //                         "CASUAL_LEAVE_BALANCE": "8",
-        //                         "GENERAL_LEAVE_BALANCE": "20"
-        //                     }
-        //                 ]
-        //             },
-        //             {
-        //                 "CASUAL_LEAVE_BALANCE": "7",
-        //                 "DESIGNATION": "Consultant",
-        //                 "EMAIL_ID": "vishal.s@intellectbizware.com",
-        //                 "EMPLOYEE_ID": 5034,
-        //                 "EMPLOYEE_NAME": "Vishal Suryawanshi",
-        //                 "GENERAL_LEAVE_BALANCE": "9",
-        //                 "MOBILE_NO": "56555665765",
-        //                 "PROJECT": "Crompton",
-        //                 "REPORTING_LEAD": "Teju Moolya",
-        //                 "REPORTING_MANAGER": "Swaroop Nagavarapu",
-        //                 "appointments": [
-        //                     {
-        //                         "EMPLOYEE_ID": 5034,
-        //                         "END_DATE": "2025-01-07T18:29:00Z",
-        //                         "IS_DELETED": null,
-        //                         "LEAVE_ID": 100183,
-        //                         "LEAVE_NOTES": "test",
-        //                         "LEAVE_STATUS": 1,
-        //                         "LEAVE_TYPE": "GL",
-        //                         "NO_OF_LEAVES": "1",
-        //                         "START_DATE": "2025-01-06T18:30:00Z",
-        //                         "EMAIL_ID": "vishal.s@intellectbizware.com",
-        //                         "EMPLOYEE_NAME": "Vishal Suryawanshi",
-        //                         "PROJECT": "Crompton",
-        //                         "CASUAL_LEAVE_BALANCE": "7",
-        //                         "GENERAL_LEAVE_BALANCE": "9"
-        //                     },
-        //                     {
-        //                         "EMPLOYEE_ID": 5034,
-        //                         "END_DATE": "2025-01-15T18:29:00Z",
-        //                         "IS_DELETED": null,
-        //                         "LEAVE_ID": 100202,
-        //                         "LEAVE_NOTES": "test",
-        //                         "LEAVE_STATUS": 1,
-        //                         "LEAVE_TYPE": "CL",
-        //                         "NO_OF_LEAVES": "1",
-        //                         "START_DATE": "2025-01-14T18:30:00Z",
-        //                         "EMAIL_ID": "vishal.s@intellectbizware.com",
-        //                         "EMPLOYEE_NAME": "Vishal Suryawanshi",
-        //                         "PROJECT": "Crompton",
-        //                         "CASUAL_LEAVE_BALANCE": "7",
-        //                         "GENERAL_LEAVE_BALANCE": "9"
-        //                     }
-        //                 ]
-        //             }
-        //         ]
-        //     };
-
-        //     var oArray = [];
-        //     for (var i = 0; i < obj.Subordinates.length; i++) {
-        //         for (var j = 0; j < obj.Subordinates[i].appointments.length; j++) {
-        //             oArray.push(obj.Subordinates[i].appointments[j]);
-        //         }
-        //     }
-
-        //     var oModel = new JSONModel({ teamsArray: oArray });
-        //     context.getOwnerComponent().setModel(oModel, "TeamsData");
-
-        //     var oModel11 = new JSONModel(obj);
-        //     context.getOwnerComponent().setModel(oModel11, "Calender1");
-
-
-        //     var oModel54 = new JSONModel({
-        //         value: obj.LeaveRequests
-        //     });
-        //     context.getOwnerComponent().setModel(oModel54, "tableData");
-
-        //     const oLastCLLeave = context.findLastLeaveByTitle(obj.LeaveRequests, "CL");
-        //     const oLastGLLeave = context.findLastLeaveByTitle(obj.LeaveRequests, "GL");
-
-        //     context.getOwnerComponent().getModel("formModel").setProperty("/lastCLLeave", oLastCLLeave);
-        //     context.getOwnerComponent().getModel("formModel").setProperty("/lastGLLeave", oLastGLLeave);
-
-        //     var oModel2 = new JSONModel();
-        //     oModel2.setData({
-        //         appointments: obj.LeaveRequests
-        //     });
-        //     context.getOwnerComponent().setModel(oModel2, "appointmentData");
-        //     BusyIndicator.hide(0);
-
-        // },
 
         onRead: function (empID, msg) {
 
@@ -1065,7 +1124,7 @@ sap.ui.define([
                 type: 'GET',
                 contentType: 'application/json',
                 success: function (oData, response) {
-
+                    
                     var oModel = new JSONModel(oData);
                     context.getOwnerComponent().setModel(oModel, "tableData");
 
@@ -1103,14 +1162,14 @@ sap.ui.define([
                         context.getView().byId("idCombo").setValue("");
                         context.getView().byId("idHalf").setValue("");
 
+                        context.getView().byId("idDynamicSideContent").setShowSideContent(false);
+                        context.getView().byId("idDynamicSideContent").setShowMainContent(true);
+
                         MessageBox.success(msg, {
                             actions: [MessageBox.Action.OK],
                             onClose: function (oAction) {
                                 if (oAction === "OK") {
-                                    // if (Device.system.phone === true) {
-                                    context.getView().byId("idDynamicSideContent").setShowSideContent(false);
-                                    context.getView().byId("idDynamicSideContent").setShowMainContent(true);
-                                    // }
+                                
                                 }
                             }
                         });
@@ -1269,10 +1328,6 @@ sap.ui.define([
             context.getOwnerComponent().getModel("formModel").refresh(true);
         },
 
-        onAppTextArea: function (oEvent) {
-
-        },
-
         onReject2: function (oEvent) {
 
             if (oEvent.getSource().getBindingContext("TeamsData") === undefined) {
@@ -1286,6 +1341,10 @@ sap.ui.define([
                 this.getView().addDependent(this.rejectDialog);
             }
             this.rejectDialog.open();
+
+            if (Device.system.phone === true) {
+                sap.ui.getCore().byId("idRejComment").setWidth("90%");
+            }
         },
 
         RejectClose: function () {
@@ -1350,6 +1409,10 @@ sap.ui.define([
                 this.getView().addDependent(this.approveDialog);
             }
             this.approveDialog.open();
+
+            if (Device.system.phone === true) {
+                sap.ui.getCore().byId("idAppComment").setWidth("90%");
+            }
         },
 
         ApproveClose: function () {

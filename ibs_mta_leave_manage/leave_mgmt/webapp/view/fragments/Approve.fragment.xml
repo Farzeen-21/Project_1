@@ -4,8 +4,11 @@
 		<VBox class="sapUiSmallMarginTop">
 			<Label text="Do you want to approve this request?" design="Bold"  
                 class="sapUiSmallMarginBegin"/>
-			<TextArea class="sapUiSmallMarginBegin" id="idAppComment" width="32rem" value="" rows="3" 
-                maxLength="1000" showExceededText="true" required="false" liveChange="handleLiveChange"/>
+			<TextArea class="sapUiSmallMarginBegin" id="idAppComment" width="95%" value="" rows="3" 
+                maxLength="200" required="false" liveChange="handleLiveChange"/>
+			<FlexBox alignContent="End" justifyContent="End" class="sapUiTinyMarginEnd">
+				<Text id="idText2" text="200 characters remaining"/>	
+			</FlexBox>
 		</VBox>
 		<buttons>
 			<Button icon="sap-icon://complete" text="Approve" type="Accept" id="idButApprove" press="onSubmitApproval" tooltip="Approve" />
