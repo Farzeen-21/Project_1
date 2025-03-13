@@ -13,11 +13,14 @@ sap.ui.define([
     "sap/m/Label",
     "sap/m/TextArea",
     "sap/m/Button",
-    "sap/ui/core/date/UI5Date"
+    "sap/ui/core/date/UI5Date",
+    "sap/ui/export/library",
+	"sap/ui/export/Spreadsheet"
 
 ], (Controller, JSONModel, MessageBox, Fragment, BusyIndicator, unifiedLibrary, coreLibrary, mobileLibrary,
-    formatter, Device, Dialog, Label, TextArea, Button, UI5Date) => {
+    formatter, Device, Dialog, Label, TextArea, Button, UI5Date, exportLibrary, Spreadsheet) => {
     "use strict";
+    const EdmType = exportLibrary.EdmType;
     var that;
     var context;
     var appModulePath;
@@ -36,13 +39,17 @@ sap.ui.define([
         formatter: formatter,
 
         onInit() {
-
             that = this;
             context = this;
             var appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             var appPath = appId.replaceAll(".", "/");
             appModulePath = jQuery.sap.getModulePath(appPath);
 
+            var oRouter = this.getOwnerComponent().getRouter().getRoute("RouteMaster");
+			oRouter.attachPatternMatched(this.handleRouteMatched, this);
+        },
+
+        handleRouteMatched: function () {
             var oModel = new JSONModel({
                 leaveType: "",
                 lDate: "",
@@ -63,6 +70,7 @@ sap.ui.define([
                 mainKey: "calendar"
             });
             context.getOwnerComponent().setModel(oModel, "formModel");
+
             BusyIndicator.show(0);
             this.onAdd();
             this.getUserAttribute();
@@ -894,36 +902,36 @@ sap.ui.define([
             //     userName: "Chandan"
             // });
 
-            var oModel = new JSONModel({
-                userId: "teju.moolya@gmail.com",
-                userName: "Intellect@123"
-            });
+            // var oModel = new JSONModel({
+            //     userId: "teju.moolya@gmail.com",
+            //     userName: "Intellect@123"
+            // });
             // var oModel = new JSONModel({
             //     userId: "swaroop.n@intellectbizware.com",
             //     userName: "Swaroop Nagarawapu"
             // });
-            context.getOwnerComponent().setModel(oModel, "userAttriJson");
-            context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getData().userId);
+            // context.getOwnerComponent().setModel(oModel, "userAttriJson");
+            // context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getData().userId);
 
-            // var attr = appModulePath + "/user-api/attributes";
-            // return new Promise(function (resolve, reject) {
-            //     $.ajax({
-            //         url: attr,
-            //         type: 'GET',
-            //         contentType: 'application/json',
-            //         success: function (data, response) {
-            //             var oModel = new JSONModel({
-            //                 userId: data.email,
-            //                 userName: data.firstname + " " + data.lastname
-            //             });
-            //             context.getOwnerComponent().setModel(oModel, "userAttriJson");
-            //             context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getData().userId);
-            //         },
-            //         error: function (oError) {
-            //             MessageBox.error("Error while reading User Attribute");
-            //         }
-            //     });
-            // });
+            var attr = appModulePath + "/user-api/attributes";
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: attr,
+                    type: 'GET',
+                    contentType: 'application/json',
+                    success: function (data, response) {
+                        var oModel = new JSONModel({
+                            userId: data.email,
+                            userName: data.firstname + " " + data.lastname
+                        });
+                        context.getOwnerComponent().setModel(oModel, "userAttriJson");
+                        context.getEmployeeDetails(context.getOwnerComponent().getModel("userAttriJson").getData().userId);
+                    },
+                    error: function (oError) {
+                        MessageBox.error("Error while reading User Attribute");
+                    }
+                });
+            });
         },
 
         getEmployeeDetails: function (userId, msg) {
@@ -1011,7 +1019,7 @@ sap.ui.define([
                 type: 'GET',
                 contentType: 'application/json',
                 success: function (oData, response) {
-
+                    
                     var oArray = [];
                     for (var i = 0; i < oData.value[0].Subordinates.EmployeeDetails.length; i++) {
                         for (var j = 0; j < oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo.length; j++) {
@@ -1029,7 +1037,7 @@ sap.ui.define([
                                 }
                                 var dateTimeString2 = oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].END_DATE;
                                 if (!dateTimeString2.endsWith("Z")) {
-                                    oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].END_DATE = dateTimeString + "Z";
+                                    oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j].END_DATE = dateTimeString2 + "Z";
                                 }
                                 oArray.push(oData.value[0].Subordinates.EmployeeDetails[i].appointments.LeaveInfo[j]);
                             }
@@ -1503,5 +1511,93 @@ sap.ui.define([
             }
             MessageBox.error(oXMLMsg);
         },
+
+        createColumnConfig: function() {
+            
+			const aCols = [];
+            aCols.push({
+				label: "Employee Name",
+				property: "EMPLOYEE_NAME",
+				type: EdmType.String,
+                width: 25
+			});
+            aCols.push({
+				label: "Start Date",
+				property: "START_DATE",
+				type: EdmType.Date,
+                width: 15
+			});
+            aCols.push({
+				label: "End Date",
+				property: "END_DATE",
+				type: EdmType.Date,
+                width: 15
+			});
+            aCols.push({
+				label: "No. of Days",
+				property: "NO_OF_LEAVES",
+				type: EdmType.String,
+                textAlign: "center",
+                width: 15
+			});
+            aCols.push({
+				label: "Leave Type",
+                type: EdmType.Enumeration,
+				property: "LEAVE_TYPE",
+				valueMap: {
+					"BA": "Birthday Anniversary",
+					"CL": "Casual Leave",
+					"CL_HALF_DAY": "Casual Half Day",
+                    "CO": "Compensatory Off",
+                    "GL": "General Leave",
+                    "GL_HALF_DAY": "General Half Day",
+                    "LWP": "Leave Without Pay",
+                    "ML": "Maternity Leave",
+                    "WFH": "Work From Home"
+				},
+                width: 20
+			});
+            aCols.push({
+				label: "Leave Status",
+                type: EdmType.Enumeration,
+				property: "LEAVE_STATUS",
+				valueMap: {
+					"1": "Pending",
+					"2": "Approved by Lead",
+					"3": "Approved by Manager",
+                    "4": "Rejected by Lead",
+                    "5": "Rejected by Manager"
+				},
+                width: 20
+			});
+            aCols.push({
+				label: "Leave Notes",
+				property: "LEAVE_NOTES",
+				type: EdmType.String,
+                width: 30
+			});
+			return aCols;
+		},
+
+        onExport: function() {
+           
+			const oTable = this.byId("idMasterTable2");
+			const oRowBinding = oTable.getBinding("items");
+			const aCols = this.createColumnConfig();
+			const oSettings = {
+				workbook: {
+					columns: aCols,
+					hierarchyLevel: "Level"
+				},
+				dataSource: oRowBinding,
+				fileName: "Team Leave Details.xlsx",
+				worker: false // We need to disable worker because we are using a MockServer as OData Service
+			};
+
+			const oSheet = new Spreadsheet(oSettings);
+			oSheet.build().finally(function() {
+				oSheet.destroy();
+			});
+		}
     });
 });

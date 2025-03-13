@@ -95,8 +95,9 @@
 								<m:headerToolbar>
 									<m:OverflowToolbar>
 										<m:content>
-											<m:Title text="Subordinates Requests"/>
-											<m:ToolbarSpacer ></m:ToolbarSpacer>
+											<m:Title text="Subordinates Requests" />
+											<m:ToolbarSpacer />
+											<m:Button icon="sap-icon://excel-attachment" press="onExport" />
 											<m:SegmentedButton selectedKey="{formModel>/key}" selectionChange="onSegBtn2"
 												visible="{= ${userAttriJson>/ROLE} !== 'Requestor' ? true : false}">
 												<m:items>
@@ -159,7 +160,8 @@
 								</m:actions>
 								<m:appointments>
 									<unified:CalendarAppointment
-										title="{path: 'appointmentData>LEAVE_TYPE', formatter: '.formatter.formatLeaveType'}"
+										title="{path:'appointmentData>LEAVE_TYPE',formatter:'.formatter.formatLeaveType'} - {path:'appointmentData>LEAVE_STATUS',formatter:'.formatter.formatLeaveStatus'}"
+										
 										text= "{appointmentData>LEAVE_NOTES}"
 										type="{path:'appointmentData>LEAVE_STATUS',formatter:'.formatter.formatType'}"
 										startDate="{path:'appointmentData>START_DATE',formatter:'.formatter.formatToDateObject'}"

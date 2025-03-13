@@ -94,18 +94,42 @@
             },
             "routes": [
                 {
+                    "name": "RouteApp",
+                    "pattern": "",
+                    "target": [
+                        "TargetApp"
+                    ]
+                },
+                {
                     "name": "RouteMaster",
-                    "pattern": ":?query:",
+                    "pattern": "Master",
                     "target": [
                         "TargetMaster"
+                    ]
+                },
+                {
+                    "name": "ServiceMsg",
+                    "pattern": "ServiceMsg",
+                    "target": [
+                        "ServiceMsg"
                     ]
                 }
             ],
             "targets": {
+                "TargetApp": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewName": "App"
+                },
                 "TargetMaster": {
                     "id": "Master",
                     "name": "Master"
-                }
+                },
+                "ServiceMsg": {
+					"viewType": "XML",
+					"viewName": "ServiceMsg"
+				}
             }
         },
         "rootView": {
